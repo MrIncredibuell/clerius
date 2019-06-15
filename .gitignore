@@ -3,4 +3,6 @@
 **/*.pyc
 **/*.json
 **/*.egg
+build/
+dist/
 clericus.egg-info

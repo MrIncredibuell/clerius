@@ -24,7 +24,7 @@ class HealthCheckEndpoint(Endpoint):
 
     class Get(Method):
         """
-            Return
+            Return the status of the server
         """
 
 
@@ -42,5 +42,6 @@ class HealthCheckEndpoint(Endpoint):
                 resp = await self.settings.db.command("ping")
 
                 return {"healthy": True}
-            except:
+            except Exception as e:
+                print(e)
                 raise ServerError(message="Server is unhealthy")
