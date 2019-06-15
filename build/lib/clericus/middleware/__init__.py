@@ -5,7 +5,7 @@ import jwt
 
 
 @middleware
-async def logRequest(request, handler):
+async def log_request(request, handler):
     start = datetime.datetime.utcnow()
     resp = await handler(request)
     print(
@@ -22,7 +22,7 @@ async def logRequest(request, handler):
     return resp
 
 
-def allowCors(origins):
+def allow_cors(origins):
     @middleware
     async def middle(request, handler):
         resp = await handler(request)

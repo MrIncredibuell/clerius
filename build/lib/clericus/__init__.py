@@ -3,13 +3,9 @@ from aiohttp.web_middlewares import normalize_path_middleware
 from dataclasses import dataclass, field
 from types import SimpleNamespace as SN
 from typing import Sequence
-from .routes import (
-    authentication as authenticationRoutes,
-    permissions as permissionRoutes,
-    health as healthRoutes
-)
+from .routes import authentication as authenticationRoutes, permissions as permissionRoutes, health as healthRoutes
 from .config import defaultSettings
-from .middleware import logRequest, allowCors, authentication as authenticationMiddleware
+from .middleware import log_request, allow_cors, authentication
 
 
 class Clericus(web.Application):
@@ -19,9 +15,9 @@ class Clericus(web.Application):
         super().__init__(
             middlewares=[
                 normalize_path_middleware(append_slash=True),
-                allowCors(origins=baseSettings["corsOrigins"]),
-                logRequest,
-                authenticationMiddleware(
+                allow_cors(origins=baseSettings["corsOrigins"]),
+                log_request,
+                authentication(
                     db=baseSettings["db"],
                     secretKey=baseSettings["jwtKey"],
                 ),

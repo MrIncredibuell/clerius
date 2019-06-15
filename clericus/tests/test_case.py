@@ -1,15 +1,15 @@
 import sys
 sys.path.append(".")
 
-from server import Clericus
-from config import defaultSettings, connectToDB
+from .. import Clericus
+from ..config import defaultSettings, connectToDB
 
 import unittest
 from aiohttp.test_utils import AioHTTPTestCase, unittest_run_loop
 
 import json
 
-from schemas import createCollections
+from ..schemas import createCollections
 
 
 class ClericusTestCase(AioHTTPTestCase):

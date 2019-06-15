@@ -1,6 +1,6 @@
 from aiohttp import web
 from typing import Dict
-from ..parsing import RequestParser
+from parsing import RequestParser
 
 
 def setCurrentUser(response: web.Response, user: Dict) -> web.Response:

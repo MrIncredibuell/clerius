@@ -4,8 +4,8 @@ import asyncio
 import sys
 sys.path.append(".")
 sys.path.append("..")
-from parsing import DictParser
-from parsing.fields import StringField, DictField
+from ..parsing import DictParser
+from ..parsing.fields import StringField, DictField
 
 
 def async_test(f):
@@ -30,8 +30,6 @@ class TestParsing(unittest.TestCase):
                 }
             )
 
-        print(dir(dp))
-
         parsed = await dp().parse({
             "stringOne": "moo",
             "stringTwo": "cow",
@@ -49,8 +47,6 @@ class TestParsing(unittest.TestCase):
         self.assertEqual(parsed["dictOne"]["stringThree"], "moo")
         self.assertEqual(parsed["dictOne"]["stringFour"], "cow")
         self.assertEqual(parsed["dictOne"]["dictTwo"]["x"], 1)
-
-        print(parsed)
 
 
 if __name__ == '__main__':

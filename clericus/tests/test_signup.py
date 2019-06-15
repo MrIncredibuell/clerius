@@ -3,7 +3,7 @@ sys.path.append(".")
 
 import unittest
 from aiohttp.test_utils import unittest_run_loop
-from test_case import ClericusTestCase
+from .test_case import ClericusTestCase
 
 import faker
 fake = faker.Faker()
