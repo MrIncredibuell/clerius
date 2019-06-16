@@ -24,4 +24,4 @@ class ClericusTestCase(AioHTTPTestCase):
         self._settings = settings
         self.db = settings["db"]
         await createCollections(self.db)
-        return Clericus(self._settings)
+        return Clericus(self._settings, logging=False)

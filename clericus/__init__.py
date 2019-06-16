@@ -4,8 +4,7 @@ from dataclasses import dataclass, field
 from types import SimpleNamespace as SN
 from typing import Sequence
 from .routes import (
-    authentication as authenticationRoutes,
-    permissions as permissionRoutes,
+    authentication as authenticationRoutes, permissions as permissionRoutes,
     health as healthRoutes
 )
 from .config import defaultSettings
@@ -13,20 +12,24 @@ from .middleware import logRequest, allowCors, authentication as authenticationM
 
 
 class Clericus(web.Application):
-    def __init__(self, settings=None):
+    def __init__(self, settings=None, logging=True):
         baseSettings = defaultSettings()
         baseSettings.update(settings or {})
-        super().__init__(
-            middlewares=[
-                normalize_path_middleware(append_slash=True),
-                allowCors(origins=baseSettings["corsOrigins"]),
-                logRequest,
-                authenticationMiddleware(
-                    db=baseSettings["db"],
-                    secretKey=baseSettings["jwtKey"],
-                ),
-            ]
+        middlewares = [
+            normalize_path_middleware(append_slash=True),
+            allowCors(origins=baseSettings["corsOrigins"]),
+        ]
+
+        if logging:
+            middlewares.append(logRequest)
+
+        middlewares.append(
+            authenticationMiddleware(
+                db=baseSettings["db"],
+                secretKey=baseSettings["jwtKey"],
+            ),
         )
+        super().__init__(middlewares=middlewares, )
 
         self["settings"] = baseSettings
 
@@ -63,4 +66,3 @@ class Clericus(web.Application):
 
     def run_app(self):
         web.run_app(self)
-
