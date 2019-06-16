@@ -158,6 +158,7 @@ def newMethod(
 
     attributes = {
         "process": process,
+        "__doc__": description,
         "Parser": type(
             "Parser",
             (RequestParser, ),
@@ -167,7 +168,7 @@ def newMethod(
             "Serializer",
             (ResponseSerializer, ),
             responseFields,
-        )
+        ),
     }
 
     return type(

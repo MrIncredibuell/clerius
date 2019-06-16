@@ -1,5 +1,3 @@
-import sys
-
 import unittest
 from aiohttp.test_utils import unittest_run_loop
 from ..test_case import ClericusTestCase
