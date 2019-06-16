@@ -105,9 +105,20 @@ class RequestParser():
         return parameters
 
     def describe(self):
-        return {
+        """
+        Return a dictionary of possible parameters to be parsed
+        """
+        description = {
             "body": self.BodyParser().describe(),
+            "url": self.UrlParser().describe(),
+            "query": self.QueryParser().describe(),
         }
+
+        for (k, v) in list(description.items()):
+            if not v:
+                del description[k]
+
+        return description
 
 
 class ResponseSerializer():

@@ -60,3 +60,5 @@ class TestDocumentation(ClericusTestCase):
             data["methods"]["get"]["description"],
             "This is a test handler",
         )
+
+        print(data)
