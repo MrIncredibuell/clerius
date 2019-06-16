@@ -1,11 +1,8 @@
 import unittest
 import asyncio
 
-import sys
-sys.path.append(".")
-sys.path.append("..")
-from ..parsing import DictParser
-from ..parsing.fields import StringField, DictField
+from ...parsing import DictParser
+from ...parsing.fields import StringField, DictField
 
 
 def async_test(f):
