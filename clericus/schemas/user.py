@@ -86,12 +86,13 @@ async def createUser(
         )
         user["_id"] = result.inserted_id
 
-        await setPassword(
-            db=db,
-            session=session,
-            userID=user["_id"],
-            password=password,
-        )
+        if password != None:
+            await setPassword(
+                db=db,
+                session=session,
+                userID=user["_id"],
+                password=password,
+            )
 
         return user
     except DuplicateKeyError as err:
