@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="clericus",
-    version="0.0.2",
+    version="0.0.3",
     author="Joseph L Buell V",
     author_email="jlrbuellv@gmail.com",
-    description="A small example package",
+    description="An async webserver focused on being predictable and self documenting.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/mrincredibuell/clericus",
@@ -25,6 +25,7 @@ setuptools.setup(
         "motor>=2.0.0",
         "python-dateutil>=2.8.0",
         "bcrypt>=3.1.6",
-        "dnspython>=1.16.0"
+        "dnspython>=1.16.0",
+        "faker>=1.0.7",
     ],
 )

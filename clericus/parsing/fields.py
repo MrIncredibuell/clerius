@@ -7,6 +7,7 @@ import jwt
 import bson
 import traceback
 import inspect
+import string
 
 from dateutil.parser import parse as parseDate
 
@@ -87,8 +88,18 @@ class EmailField(NonBlankStringField):
         value = super().parser(value)
         if "@" not in value:
             raise ParseError(
-                message="\"{}\" is not a valid email address".format(value)
+                message=f"{value} is not a valid email address",
             )
+        return value
+
+@dataclass
+class UsernameField(NonBlankStringField):
+    def parser(self, value):
+        value = super().parser(value)
+
+        if any([c in value for c in string.whitespace]):
+            raise ParseError("Usernames must not contain whitespace")
+        
         return value
 
 
