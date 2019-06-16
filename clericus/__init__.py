@@ -61,7 +61,11 @@ class Clericus(web.Application):
         )
         self.router.add_route(
             "get", f"/documentation{path}",
-            handlerClass(settings=SN(**self["settings"])).handleDocumentation
+            handlerClass(
+                settings=SN(**self["settings"]),
+                name=name,
+                path=path,
+            ).handleDocumentation
         )
 
     def run_app(self):

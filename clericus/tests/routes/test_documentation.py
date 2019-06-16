@@ -20,15 +20,17 @@ class TestDocumentation(ClericusTestCase):
     async def get_application(self):
         app = await super().get_application()
 
-        async def process(self, value):
-            return {"result": value + " cow"}
+        async def process(self, exampleValue):
+            return {"result": exampleValue + " cow"}
 
         getMethod = newMethod(
             httpMethod="Get",
             description="This is a test handler",
             process=process,
             urlParameters={
-                "value": StringField(description="A string to modify", ),
+                "exampleValue": StringField(
+                    description="A string to modify",
+                ),
             },
             responseFields={
                 "result": StringField(
@@ -44,8 +46,9 @@ class TestDocumentation(ClericusTestCase):
             Get = getMethod
 
         app.add_endpoint(
-            "/stuff/{value}/",
+            "/stuff/{exampleValue}/",
             end,
+            name="Example Endpoint",
         )
         return app
 
@@ -56,9 +59,9 @@ class TestDocumentation(ClericusTestCase):
         data = await resp.json()
 
         self.assertEqual(data["description"], "An example endpoint.")
+        self.assertEqual(data["name"], "Example Endpoint")
+        self.assertEqual(data["path"], "/stuff/{exampleValue}/")
         self.assertEqual(
             data["methods"]["get"]["description"],
             "This is a test handler",
         )
-
-        print(data)

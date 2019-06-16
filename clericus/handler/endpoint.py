@@ -4,12 +4,19 @@ from .method import Method
 
 
 class Endpoint():
-    def __init__(self, settings=None):
+    def __init__(
+        self,
+        settings=None,
+        name: str = None,
+        path: str = None,
+    ):
         self.settings = settings or {}
         self.Options = self.generateOptionsClass(
             list(self.methods().keys()) + ["options"],
             settings=self.settings,
         )
+        self.name = name
+        self.path = path
 
     def methods(self):
         return {
