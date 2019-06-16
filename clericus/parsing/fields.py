@@ -8,8 +8,15 @@ import bson
 import traceback
 import inspect
 import string
+import enum
 
 from dateutil.parser import parse as parseDate
+
+
+class FieldTypes(str, enum.Enum):
+    STRING = "string"
+    BOOL = "boolean"
+    OBJECT = "object"
 
 
 @dataclass
@@ -17,7 +24,7 @@ class Field():
     optional: bool = False
     missingStatusCode: int = None
     default: Any = None
-    allowedTypes: List[str] = None
+    allowedTypes: List[str] = field(default_factory=list)
     description: str = ""
     parseFrom: str = None
     serializeTo: str = None
@@ -52,7 +59,7 @@ class Field():
 
 @dataclass
 class StringField(Field):
-    allowedTypes = ["String"]
+    allowedTypes: List = field(default_factory=lambda: [FieldTypes.STRING])
 
     def parser(self, value):
         value = super().parser(value)
@@ -87,10 +94,9 @@ class EmailField(NonBlankStringField):
     def parser(self, value):
         value = super().parser(value)
         if "@" not in value:
-            raise ParseError(
-                message=f"{value} is not a valid email address",
-            )
+            raise ParseError(message=f"{value} is not a valid email address", )
         return value
+
 
 @dataclass
 class UsernameField(NonBlankStringField):
@@ -99,13 +105,13 @@ class UsernameField(NonBlankStringField):
 
         if any([c in value for c in string.whitespace]):
             raise ParseError("Usernames must not contain whitespace")
-        
+
         return value
 
 
 @dataclass
 class ObjectIdField(Field):
-    allowedTypes = ["String"]
+    allowedTypes: List = field(default_factory=lambda: [FieldTypes.STRING])
 
     def parser(self, value):
         try:
@@ -120,7 +126,7 @@ class ObjectIdField(Field):
 
 @dataclass
 class DatetimeField(Field):
-    allowedTypes = ["String"]
+    allowedTypes: List = field(default_factory=lambda: [FieldTypes.STRING])
 
     def parser(self, value):
         try:
@@ -139,7 +145,7 @@ class DatetimeField(Field):
 
 @dataclass
 class BoolField(Field):
-    allowedTypes = ["Boolean"]
+    allowedTypes: List = field(default_factory=lambda: [FieldTypes.BOOL])
 
     def parser(self, value):
         try:
@@ -169,6 +175,8 @@ class JwtField(Field):
 
 @dataclass
 class DictField(Field):
+    allowedTypes: List = field(default_factory=lambda: [FieldTypes.OBJECT])
+
     def __init__(self, fields: dict, *args, **kwargs):
         super().__init__(*args, **kwargs)
         fields = fields or {}
