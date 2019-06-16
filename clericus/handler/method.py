@@ -147,21 +147,28 @@ def newMethod(
         "BodyParser": bodyParameters,
     }
 
-    attributes = {"process": process}
+    parserAttributes = {}
     for key, params in classMap.items():
         if params:
-            attributes[key] = type(
+            parserAttributes[key] = type(
                 key,
                 (DictParser, ),
                 params,
             )
 
-    if responseFields:
-        attributes["Serializer"] = type(
+    attributes = {
+        "process": process,
+        "Parser": type(
+            "Parser",
+            (RequestParser, ),
+            parserAttributes,
+        ),
+        "Serializer": type(
             "Serializer",
             (ResponseSerializer, ),
             responseFields,
         )
+    }
 
     return type(
         httpMethod,

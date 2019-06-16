@@ -98,6 +98,7 @@ class RequestParser():
                     request.match_info
                 )
             )
+
         except:
             raise ClientError(statusCode=404)
 

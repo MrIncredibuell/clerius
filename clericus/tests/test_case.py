@@ -16,7 +16,7 @@ class ClericusTestCase(AioHTTPTestCase):
     async def tearDownAsync(self):
         await self.db.client.drop_database(self.db.name)
 
-    async def get_application(self):
+    async def get_application(self) -> Clericus:
         settings = defaultSettings()
         settings["db"]["name"] = f"test{type(self).__name__}"
         settings = connectToDB(settings)
