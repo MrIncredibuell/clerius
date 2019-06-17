@@ -53,7 +53,32 @@ class TestDocumentation(ClericusTestCase):
         return app
 
     @unittest_run_loop
-    async def testDocumentation(self):
+    async def testBaseDocumentation(self):
+        resp = await self.client.request("GET", "/")
+        self.assertEqual(resp.status, 200)
+        data = await resp.json()
+
+        self.assertGreater(len(data), 1)
+
+        data = next(
+            filter(lambda k: k["path"] == "/stuff/{exampleValue}/", data)
+        )
+        self.assertEqual(data["description"], "An example endpoint.")
+        self.assertEqual(data["name"], "Example Endpoint")
+        self.assertEqual(data["path"], "/stuff/{exampleValue}/")
+        self.assertEqual(
+            data["methods"]["get"]["description"],
+            "This is a test handler",
+        )
+
+        self.assertEqual(
+            data["methods"]["get"]["request"]["url"]["exampleValue"]
+            ["description"],
+            "A string to modify",
+        )
+
+    @unittest_run_loop
+    async def testEndpointDocumentation(self):
         resp = await self.client.request("GET", "/documentation/stuff/moo/")
         self.assertEqual(resp.status, 200)
         data = await resp.json()

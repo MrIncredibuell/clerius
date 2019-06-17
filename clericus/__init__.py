@@ -1,5 +1,6 @@
 from aiohttp import web
 from aiohttp.web_middlewares import normalize_path_middleware
+import json
 from dataclasses import dataclass, field
 from types import SimpleNamespace as SN
 from typing import Sequence
@@ -31,7 +32,15 @@ class Clericus(web.Application):
         )
         super().__init__(middlewares=middlewares, )
 
+        self.documentation = []
+
         self["settings"] = baseSettings
+
+        self.router.add_route(
+            "GET",
+            "/",
+            self.documentationHandler,
+        )
 
         self.add_endpoint(
             "/sign-up/",
@@ -55,17 +64,24 @@ class Clericus(web.Application):
         )
 
     def add_endpoint(self, path, handlerClass, name=None):
-        self.router.add_route(
-            "*", path,
-            handlerClass(settings=SN(**self["settings"])).handle
+        cls = handlerClass(
+            settings=SN(**self["settings"]),
+            name=name,
+            path=path,
         )
+        self.router.add_route("*", path, cls.handle)
         self.router.add_route(
-            "get", f"/documentation{path}",
-            handlerClass(
-                settings=SN(**self["settings"]),
-                name=name,
-                path=path,
-            ).handleDocumentation
+            "get",
+            f"/documentation{path}",
+            cls.handleDocumentation,
+        )
+
+        self.documentation.append(cls.describe())
+
+    async def documentationHandler(self, request: web.Request) -> web.Response:
+        return web.Response(
+            text=json.dumps(self.documentation),
+            headers={"Content-Type": "application/json"}
         )
 
     def run_app(self):

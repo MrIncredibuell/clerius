@@ -1,6 +1,8 @@
 from aiohttp import web
-from .documentation import handleDocumentation
 from .method import Method
+
+from inspect import getdoc
+import json
 
 
 class Endpoint():
@@ -39,8 +41,32 @@ class Endpoint():
             status=405,
         )
 
-    async def handleDocumentation(self, request: web.Request) -> web.Response:
-        return await handleDocumentation(self)
+    async def handleDocumentation(
+        self, request: web.Request, *args
+    ) -> web.Response:
+        docs = self.describe()
+
+        return web.Response(
+            text=json.dumps(docs),
+            headers={"Content-Type": "application/json"}
+        )
+
+    def describe(self):
+        docs = {
+            "description": getdoc(self),
+        }
+
+        if self.name:
+            docs["name"] = self.name
+
+        if self.path:
+            docs["path"] = self.path
+
+        docs["methods"] = {
+            methodName: methodClass().describe()
+            for methodName, methodClass in self.methods().items()
+        }
+        return docs
 
     def generateOptionsClass(self, methods, settings=None):
         methodString = ", ".join([m.upper() for m in methods])
