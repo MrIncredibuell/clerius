@@ -57,11 +57,11 @@ class TestDocumentation(ClericusTestCase):
         resp = await self.client.request("GET", "/")
         self.assertEqual(resp.status, 200)
         data = await resp.json()
-
-        self.assertGreater(len(data), 1)
+        endpoints = data["endpoints"]
+        self.assertGreater(len(endpoints), 1)
 
         data = next(
-            filter(lambda k: k["path"] == "/stuff/{exampleValue}/", data)
+            filter(lambda k: k["path"] == "/stuff/{exampleValue}/", endpoints)
         )
         self.assertEqual(data["description"], "An example endpoint.")
         self.assertEqual(data["name"], "Example Endpoint")
