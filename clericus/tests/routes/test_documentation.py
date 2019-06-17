@@ -65,3 +65,9 @@ class TestDocumentation(ClericusTestCase):
             data["methods"]["get"]["description"],
             "This is a test handler",
         )
+
+        self.assertEqual(
+            data["methods"]["get"]["request"]["url"]["exampleValue"]
+            ["description"],
+            "A string to modify",
+        )
