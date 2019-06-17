@@ -248,6 +248,7 @@ class ErrorField(DictField):
 @dataclass
 class ListField(Field):
     def __init__(self, elementField):
+        super().__init__()
         self.elementField = elementField
         self.default = []
 
