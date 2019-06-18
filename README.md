@@ -93,18 +93,148 @@ $ (master)$ curl 'localhost:8080/echo/'
 {"errors": [{"message": "Missing required field: phrase"}]}
 ```
 
-Clericus also handles documentation based on your configuration, so any endpoint you add also adds another `documentation` endpoint like so:
+Clericus also handles documentation based on your configuration, so any endpoint you add also adds another `documentation` endpoint like so (JSON expanded for clarity):
 
 ```
 $curl 'localhost:8080/documentation/echo/'
-{"description": "String Echoing", "name": "Echo Example", "path": "/echo/", "methods": {"get": {"description": "Echo the string given in the query", "request": {"query": {"phrase": {"allowedTypes": ["string"], "optional": false, "default": null, "description": "A string to echo some number of times"}, "times": {"allowedTypes": ["int"], "optional": true, "default": 1, "description": "The number of times to repeat the given string"}}}, "response": {"body": {"echo": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}}}}, "options": {"description": null, "request": {}, "response": {"body": {}}}}
+{
+    "description": "String Echoing",
+    "name": "Echo Example",
+    "path": "/echo/",
+    "methods": {
+        "get": {
+            "description": "Echo the string given in the query",
+            "request": {
+                "query": {
+                    "phrase": {
+                        "allowedTypes": [
+                            "string"
+                        ],
+                        "optional": false,
+                        "default": null,
+                        "description": "A string to echo some number of times"
+                    },
+                    "times": {
+                        "allowedTypes": [
+                            "int"
+                        ],
+                        "optional": true,
+                        "default": 1,
+                        "description": "The number of times to repeat the given string"
+                    }
+                }
+            },
+            "response": {
+                "body": {
+                    "echo": {
+                        "allowedTypes": [
+                            "string"
+                        ],
+                        "optional": false,
+                        "default": null,
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "options": {
+            "description": null,
+            "request": {},
+            "response": {
+                "body": {}
+            }
+        }
+    }
+}
 ```
 
 
 Clericus also assumes the root path should be the documentation for your API, so you can do the following to see all endpoints (currently some authentication methods are always included, I plan to factor these out later...)
 
-```curl 'localhost:8080/'
-{"endpoints": [{"description": "String Echoing", "name": "Echo Example", "path": "/echo/", "methods": {"get": {"description": "Echo the string given in the query", "request": {"query": {"phrase": {"allowedTypes": ["string"], "optional": false, "default": null, "description": "A string to echo some number of times"}, "times": {"allowedTypes": ["int"], "optional": true, "default": 1, "description": "The number of times to repeat the given string"}}}, "response": {"body": {"echo": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}}}}, "options": {"description": null, "request": {}, "response": {"body": {}}}}}, {"description": "Return the status of the server", "path": "/healthy/", "methods": {"get": {"description": "Return the status of the server", "request": {}, "response": {"body": {"healthy": {"allowedTypes": [], "optional": false, "default": true, "description": "A boolean of whether the server is healthy"}}}}, "options": {"description": null, "request": {}, "response": {"body": {}}}}}, {"description": null, "path": "/log-in/", "methods": {"options": {"description": null, "request": {}, "response": {"body": {}}}, "post": {"description": null, "request": {"body": {"email": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}, "password": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}}}, "response": {"body": {"currentUser": {"email": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}, "id": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}, "username": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}}, "errors": {"allowedTypes": [], "optional": false, "default": [], "description": ""}, "token": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}}}}}}, {"description": null, "path": "/log-out/", "methods": {"get": {"description": null, "request": {}, "response": {"body": {}}}, "options": {"description": null, "request": {}, "response": {"body": {}}}}}, {"description": null, "path": "/me/", "methods": {"get": {"description": null, "request": {}, "response": {"body": {"currentUser": {"email": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}, "id": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}, "username": {"allowedTypes": ["string"], "optional": false, "default": null, "description": ""}}, "errors": {"allowedTypes": [], "optional": false, "default": [], "description": ""}}}}, "options": {"description": null, "request": {}, "response": {"body": {}}}}}, {"description": "Handle Initial account creation", "path": "/sign-up/", "methods": {"options": {"description": null, "request": {}, "response": {"body": {}}}, "post": {"description": "Create a new user with the given username, email, and password.", "request": {"body": {"email": {"allowedTypes": ["string"], "optional": false, "default": null, "description": "The email of the user being created"}, "password": {"allowedTypes": ["string"], "optional": false, "default": null, "description": "The password to set for the new user"}, "username": {"allowedTypes": ["string"], "optional": false, "default": null, "description": "The username of the user being created"}}}, "response": {"body": {"errors": {"allowedTypes": [], "optional": false, "default": [], "description": ""}, "success": {"allowedTypes": [], "optional": false, "default": null, "description": "A boolean of whether the user was created"}}}}}}]}```
+```
+curl 'localhost:8080/'
+{
+    "endpoints": [
+        {
+            "description": "String Echoing",
+            "name": "Echo Example",
+            "path": "/echo/",
+            "methods": {
+                "get": {
+                    "description": "Echo the string given in the query",
+                    "request": {
+                        "query": {
+                            "phrase": {
+                                "allowedTypes": [
+                                    "string"
+                                ],
+                                "optional": false,
+                                "default": null,
+                                "description": "A string to echo some number of times"
+                            },
+                            "times": {
+                                "allowedTypes": [
+                                    "int"
+                                ],
+                                "optional": true,
+                                "default": 1,
+                                "description": "The number of times to repeat the given string"
+                            }
+                        }
+                    },
+                    "response": {
+                        "body": {
+                            "echo": {
+                                "allowedTypes": [
+                                    "string"
+                                ],
+                                "optional": false,
+                                "default": null,
+                                "description": ""
+                            }
+                        }
+                    }
+                },
+                "options": {
+                    "description": null,
+                    "request": {},
+                    "response": {
+                        "body": {}
+                    }
+                }
+            }
+        },
+        {
+            "description": "Return the status of the server",
+            "path": "/healthy/",
+            "methods": {
+                "get": {
+                    "description": "Return the status of the server",
+                    "request": {},
+                    "response": {
+                        "body": {
+                            "healthy": {
+                                "allowedTypes": [],
+                                "optional": false,
+                                "default": true,
+                                "description": "A boolean of whether the server is healthy"
+                            }
+                        }
+                    }
+                },
+                "options": {
+                    "description": null,
+                    "request": {},
+                    "response": {
+                        "body": {}
+                    }
+                }
+            }
+        },
+        ...
+    ]
+}
+```
 
 ## Versioning
 
