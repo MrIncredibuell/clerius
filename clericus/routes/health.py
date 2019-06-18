@@ -22,6 +22,7 @@ class HealthCheckEndpoint(Endpoint):
     """
         Return the status of the server
     """
+    name = "Health Check"
 
     async def getProcess(self, ):
         try:

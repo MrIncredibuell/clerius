@@ -1,5 +1,5 @@
 from aiohttp import web
-from .method import Method
+from .method import Method, newMethod
 
 from inspect import getdoc
 import json
@@ -17,6 +17,10 @@ class Endpoint():
             list(self.methods().keys()) + ["options"],
             settings=self.settings,
         )
+
+        if hasattr(self, "Get"):
+            print(f"Should build HEAD route for {self}")
+
         self.name = name
         self.path = path
 
@@ -73,12 +77,17 @@ class Endpoint():
 
         settings = settings or {}
 
-        class Options(Method):
-            async def process(self, **kwargs):
-                self.setHeader("Allow", methodString)
+        async def process(self, **kwargs):
+            self.setHeader("Allow", methodString)
 
-                # CORS
-                self.setHeader("Access-Control-Request-Method", methodString)
-                return
+            # CORS
+            self.setHeader("Access-Control-Request-Method", methodString)
+            return
 
-        return Options
+        name = getattr(self, 'name', 'Unknown Handler')
+
+        return newMethod(
+            httpMethod="OPTIONS",
+            description=f"OPTIONS handler for {name}",
+            process=process,
+        )

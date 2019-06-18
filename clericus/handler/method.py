@@ -167,7 +167,7 @@ def newMethod(
         "Serializer": type(
             "Serializer",
             (ResponseSerializer, ),
-            responseFields,
+            responseFields or {},  # Can't be None
         ),
     }
 
