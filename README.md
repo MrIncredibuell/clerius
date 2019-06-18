@@ -15,7 +15,7 @@ Clericus requires Python 3.7.
 Clericus is on pypi, but is still in alpha, so your mileage may vary.  Install the latest alpha release (which is probably a different version by now) like so:
 
 ```
-pip install clericus==0.0.3a4
+$ pip install clericus==0.0.3a4
 ```
 
 ## Running the tests
@@ -23,7 +23,7 @@ pip install clericus==0.0.3a4
 Tests are built with unittest and can be run via:
 
 ```
-python -m unittest 
+$ python -m unittest 
 ```
 
 Add the `-v` flag if you want more verbosity.
@@ -75,28 +75,28 @@ server.runApp()
 With the webserver running, in another tab do:
 
 ```
-$ (master)$ curl 'localhost:8080/echo/?phrase=hello-world&times=3'
+$ curl 'localhost:8080/echo/?phrase=hello-world&times=3'
 {"echo": "hello-worldhello-worldhello-world"}
 ```
 
 Because the `times` parameter is optional, it can be omitted and the configured default will be used.
 
 ```
-$ (master)$ curl 'localhost:8080/echo/?phrase=hello-world'
+$ curl 'localhost:8080/echo/?phrase=hello-world'
 {"echo": "hello-world"}
 ```
 
 Leaving out the required `phrase` parameter will cause the server to response with an automatically generated error:
 
 ```
-$ (master)$ curl 'localhost:8080/echo/'
+$ curl 'localhost:8080/echo/'
 {"errors": [{"message": "Missing required field: phrase"}]}
 ```
 
 Clericus also handles documentation based on your configuration, so any endpoint you add also adds another `documentation` endpoint like so (JSON expanded for clarity):
 
 ```
-$curl 'localhost:8080/documentation/echo/'
+$ curl 'localhost:8080/documentation/echo/'
 {
     "description": "String Echoing",
     "name": "Echo Example",
@@ -152,7 +152,7 @@ $curl 'localhost:8080/documentation/echo/'
 Clericus also assumes the root path should be the documentation for your API, so you can do the following to see all endpoints (currently some authentication methods are always included, I plan to factor these out later...)
 
 ```
-curl 'localhost:8080/'
+$ curl 'localhost:8080/'
 {
     "endpoints": [
         {
@@ -234,6 +234,31 @@ curl 'localhost:8080/'
         ...
     ]
 }
+```
+
+Clericus also handles `OPTIONS` requests based on your definitions, so:
+
+```
+$ curl -X OPTIONS localhost:8080/echo/ -v
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 8080 (#0)
+> OPTIONS /echo/ HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Allow: GET, OPTIONS
+< Access-Control-Request-Method: GET, OPTIONS
+< Content-Type: application/json; charset=utf-8
+< Access-Control-Allow-Credentials: true
+< Access-Control-Allow-Origin: http://localhost:3000
+< Content-Length: 2
+< Date: Tue, 18 Jun 2019 01:23:23 GMT
+< Server: Python/3.7 aiohttp/3.5.4
+< 
+* Connection #0 to host localhost left intact
 ```
 
 ## Versioning
