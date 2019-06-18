@@ -11,6 +11,8 @@ from .routes import (
 from .config import defaultSettings
 from .middleware import logRequest, allowCors, authentication as authenticationMiddleware
 
+from .handler import newMethod, Endpoint, Method
+
 
 class Clericus(web.Application):
     def __init__(self, settings=None, logging=True):
@@ -42,28 +44,28 @@ class Clericus(web.Application):
             self.documentationHandler,
         )
 
-        self.add_endpoint(
+        self.addEndpoint(
             "/sign-up/",
             authenticationRoutes.SignUpEndpoint,
         )
-        self.add_endpoint(
+        self.addEndpoint(
             "/log-in/",
             authenticationRoutes.LogInEndpoint,
         )
-        self.add_endpoint(
+        self.addEndpoint(
             "/log-out/",
             authenticationRoutes.LogOutEndpoint,
         )
-        self.add_endpoint(
+        self.addEndpoint(
             "/me/",
             authenticationRoutes.MeEndpoint,
         )
-        self.add_endpoint(
+        self.addEndpoint(
             "/healthy/",
             healthRoutes.HealthCheckEndpoint,
         )
 
-    def add_endpoint(self, path, handlerClass, name=None):
+    def addEndpoint(self, path, handlerClass, name=None):
         cls = handlerClass(
             settings=SN(**self["settings"]),
             name=name,
@@ -89,5 +91,5 @@ class Clericus(web.Application):
             headers={"Content-Type": "application/json"}
         )
 
-    def run_app(self):
+    def runApp(self):
         web.run_app(self)

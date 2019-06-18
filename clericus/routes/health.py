@@ -23,17 +23,6 @@ class HealthCheckEndpoint(Endpoint):
         Return the status of the server
     """
 
-    # class Get(Method):
-    #     """
-    #         Return the status of the server
-    #     """
-
-    #     class Serializer(ResponseSerializer):
-    #         def __init__(self):
-    #             self.healthy = Field(
-    #                 description="A boolean of whether the server is healthy",
-    #                 default=True,
-    #             )
     async def getProcess(self, ):
         try:
             resp = await self.settings.db.command("ping")

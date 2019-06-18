@@ -17,6 +17,7 @@ class FieldTypes(str, enum.Enum):
     STRING = "string"
     BOOL = "boolean"
     OBJECT = "object"
+    INTEGER = "int"
 
 
 @dataclass
@@ -55,6 +56,24 @@ class Field():
 
     def __repr__(self):
         return "FIELD"
+
+
+@dataclass
+class IntegerField(Field):
+    allowedTypes: List = field(default_factory=lambda: [FieldTypes.INTEGER])
+
+    def parser(self, value):
+        value = super().parser(value)
+        if isinstance(value, str):
+            try:
+                value = int(value)
+            except:
+                raise ParseError(
+                    message="\"{}\" is not an integer".format(value)
+                )
+        if not isinstance(value, int):
+            raise ParseError(message="\"{}\" is not an integer".format(value))
+        return value
 
 
 @dataclass
