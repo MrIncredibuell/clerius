@@ -19,7 +19,11 @@ class Endpoint():
         )
 
         if hasattr(self, "Get"):
-            print(f"Should build HEAD route for {self}")
+            # print(f"Should build HEAD route for {self}")
+            self.Head = self.generateHeadClass(
+                self.Get,
+                settings=self.settings,
+            )
 
         self.name = name
         self.path = path
@@ -91,3 +95,23 @@ class Endpoint():
             description=f"OPTIONS handler for {name}",
             process=process,
         )
+
+    def generateHeadClass(self, getMethod, settings):
+        class Head(Method):
+            """
+            HEAD Handler
+            """
+            Parser = getMethod.Parser
+            process = getMethod.process
+
+            async def serialize(self, result):
+                return await self.Serializer().serialize(
+                    result,
+                    statusCode=self.statusCode,
+                    headers=self.headers,
+                    cookies=self.cookies,
+                    deletedCookies=self.deletedCookies,
+                    dropBody=True,
+                )
+
+        return Head

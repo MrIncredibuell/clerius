@@ -139,6 +139,7 @@ class ResponseSerializer():
         headers=None,
         cookies=None,
         deletedCookies=None,
+        dropBody=False,
     ):
         body = {}
         fields = self._getFields()
@@ -160,11 +161,18 @@ class ResponseSerializer():
 
         headers = {k: "; ".join(vs) for k, vs in headers.items()}
 
-        response = web.json_response(
-            body,
-            status=statusCode,
-            headers=headers or {},
-        )
+        if not dropBody:
+            response = web.json_response(
+                body,
+                status=statusCode,
+                headers=headers or {},
+            )
+        else:
+            response = web.Response(
+                None,
+                status=statusCode,
+                headers=headers or {},
+            )
 
         for c in (cookies or {}).values():
 
