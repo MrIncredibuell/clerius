@@ -63,7 +63,7 @@ class TestUrlParameters(ClericusTestCase):
         class end(Endpoint):
             Get = getMethod
 
-        app.add_endpoint(
+        app.addEndpoint(
             "/stuff/{value}/",
             end,
         )

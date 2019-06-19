@@ -45,7 +45,7 @@ class TestDocumentation(ClericusTestCase):
             """
             Get = getMethod
 
-        app.add_endpoint(
+        app.addEndpoint(
             "/stuff/{exampleValue}/",
             end,
             name="Example Endpoint",
