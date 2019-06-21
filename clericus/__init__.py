@@ -82,14 +82,17 @@ class Clericus(web.Application):
 
     async def documentationHandler(self, request: web.Request) -> web.Response:
         return web.Response(
-            text=json.dumps({
-                "endpoints": sorted(
-                    self.documentation,
-                    key=lambda k: k["path"],
-                )
-            }),
+            text=json.dumps(self.describe()),
             headers={"Content-Type": "application/json"}
         )
+
+    def describe(self):
+        return {
+            "endpoints": sorted(
+                self.documentation,
+                key=lambda k: k["path"],
+            )
+        }
 
     def runApp(self):
         web.run_app(self)
