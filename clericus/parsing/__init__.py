@@ -2,7 +2,8 @@ from aiohttp import web
 from typing import Dict
 import json
 from .fields import Field, ListField, ErrorField
-from .errors import ParseError, ClientError
+from .errors import ParseError
+from ..errors import ClientError, ErrorList
 import datetime
 import inspect
 
@@ -30,8 +31,9 @@ class DictParser():
 
     async def parse(self, source: Dict):
         parameters = {}
+        errors = []
         for name, parameter in self._getFields().items():
-            if isinstance(parameter, Field):
+            try:
                 if (not parameter.optional) and (name not in source):
                     raise ParseError(
                         message="Missing required field: {}".format(name),
@@ -40,6 +42,10 @@ class DictParser():
                 parameters[name] = parameter.parse(
                     source.get(name, parameter.default)
                 )
+            except Exception as err:
+                errors.append(err)
+        if errors:
+            raise ErrorList(errors)
         return parameters
 
     def describe(self):
@@ -71,26 +77,40 @@ class RequestParser():
 
     async def parse(self, request):
         parameters = {}
+        errors = []
 
         if self.BodyParser:
-            body = await self._parse_body(request)
-            if body:
+            body = (await self._parse_body(request)) or {}
+            try:
                 parameters.update(await self.BodyParser().parse(body))
+            except ErrorList as errs:
+                errors += errs.errors
 
         if self.QueryParser:
-            parameters.update(await self.QueryParser().parse(request.query))
+            try:
+                parameters.update(
+                    await self.QueryParser().parse(request.query)
+                )
+            except ErrorList as errs:
+                errors += errs.errors
 
         if self.HeadersParser:
-            parameters.update(
-                await self.HeadersParser().parse(request.headers)
-            )
+            try:
+                parameters.update(
+                    await self.HeadersParser().parse(request.headers)
+                )
+            except ErrorList as errs:
+                errors += errs.errors
 
         if self.CookiesParser:
-            parameters.update(
-                await self.CookiesParser(settings=self.settings, ).parse(
-                    request.cookies
+            try:
+                parameters.update(
+                    await self.CookiesParser(settings=self.settings, ).parse(
+                        request.cookies
+                    )
                 )
-            )
+            except ErrorList as errs:
+                errors += errs.errors
 
         try:
             parameters.update(
@@ -101,6 +121,9 @@ class RequestParser():
 
         except:
             raise ClientError(statusCode=404)
+
+        if errors:
+            raise ErrorList(errors)
 
         return parameters
 

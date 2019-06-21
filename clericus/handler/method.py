@@ -1,7 +1,7 @@
 from ..parsing import RequestParser, ResponseSerializer, DictParser
 from aiohttp import web
 from inspect import getdoc
-from ..errors import HTTPError, ClientError
+from ..errors import HTTPError, ClientError, ErrorList
 import traceback
 import inspect
 
@@ -98,6 +98,11 @@ class Method():
                 parsedData["currentUser"] = currentUser
             result = await self.process(**parsedData)
             return await self.serialize(result, )
+        except ErrorList as errors:
+            return web.json_response(
+                {"errors": [e.toJSON() for e in errors.errors]},
+                status=errors.errors[0].statusCode,
+            )
         except HTTPError as e:
             return web.json_response(
                 {"errors": [e.toJSON()]},

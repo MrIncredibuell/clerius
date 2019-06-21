@@ -62,3 +62,8 @@ class ServerError(HTTPError):
             errorCode,
             key,
         )
+
+
+class ErrorList(Exception):
+    def __init__(self, errors):
+        self.errors = errors

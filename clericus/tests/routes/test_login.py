@@ -131,6 +131,19 @@ class LoginTestCase(ClericusTestCase):
         resp = await self.client.request("GET", "/me/")
         self.assertEqual(resp.status, 401)
 
+    @unittest_run_loop
+    async def testEmptyBody(self):
+
+        resp = await self.client.request(
+            "POST",
+            "/sign-up/",
+            json={},
+        )
+        # sign up
+        self.assertEqual(resp.status, 422)
+        body = await resp.json()
+        self.assertEqual(len(body["errors"]), 3)
+
 
 if __name__ == '__main__':
     unittest.main()
