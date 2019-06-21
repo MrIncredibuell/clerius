@@ -1,3 +1,5 @@
+import bson
+
 from .fields import Field, FieldTypes
 from ..errors import ParseError
 
