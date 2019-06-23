@@ -84,7 +84,7 @@ $ curl 'localhost:8080/echo/?phrase=hello-world'
 {"echo": "hello-world"}
 ```
 
-Leaving out the required `phrase` parameter will cause the server to response with an automatically generated error:
+Leaving out the required `phrase` parameter will cause the server to respond with an automatically generated error:
 
 ```
 $ curl 'localhost:8080/echo/'
