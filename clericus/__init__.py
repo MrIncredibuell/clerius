@@ -9,7 +9,7 @@ from .routes import (
     health as healthRoutes
 )
 from .config import defaultSettings
-from .middleware import logRequest, allowCors, authentication as authenticationMiddleware
+from .middleware import logRequest, allowCors, removeServerHeader, authentication as authenticationMiddleware
 
 from .handler import newMethod, Endpoint, Method
 
@@ -21,6 +21,7 @@ class Clericus(web.Application):
         middlewares = [
             normalize_path_middleware(append_slash=True),
             allowCors(origins=baseSettings["corsOrigins"]),
+            removeServerHeader,
         ]
 
         if logging:

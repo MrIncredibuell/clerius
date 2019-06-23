@@ -34,6 +34,13 @@ def allowCors(origins):
     return middle
 
 
+@middleware
+async def removeServerHeader(request, handler):
+    response = await handler(request)
+    response.headers["Server"] = ""
+    return response
+
+
 def authentication(db, secretKey, cookieName="authentication"):
     @middleware
     async def middle(request, handler):
