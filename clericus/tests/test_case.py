@@ -25,3 +25,30 @@ class ClericusTestCase(AioHTTPTestCase):
         self.db = settings["db"]
         await createCollections(self.db)
         return Clericus(self._settings, logging=False)
+
+    async def login(self):
+        resp = await self.client.request("GET", "/me/")
+        # not logged in
+        self.assertEqual(resp.status, 401)
+        data = await resp.json()
+
+        user = {
+            "username": fake.name(),
+            "email": fake.email(),
+            "password": fake.password(),
+        }
+        resp = await self.client.request(
+            "POST",
+            "/sign-up/",
+            json=user,
+        )
+        resp = await self.client.request("GET", "/me/")
+        return resp["currentUser"]
+
+    async def logout(self):
+        resp = await self.client.request(
+            "GET",
+            "/log-out/",
+        )
+        resp = await self.client.request("GET", "/me/")
+        return resp["currentUser"]
