@@ -8,6 +8,8 @@ import unittest
 from aiohttp.test_utils import AioHTTPTestCase, unittest_run_loop
 
 import json
+import faker
+fake = faker.Faker()
 
 from ..schemas import createCollections
 
