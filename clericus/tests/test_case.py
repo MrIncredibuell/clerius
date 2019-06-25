@@ -29,11 +29,6 @@ class ClericusTestCase(AioHTTPTestCase):
         return Clericus(self._settings, logging=False)
 
     async def login(self):
-        resp = await self.client.request("GET", "/me/")
-        # not logged in
-        self.assertEqual(resp.status, 401)
-        data = await resp.json()
-
         user = {
             "username": fake.name(),
             "email": fake.email(),
@@ -53,5 +48,4 @@ class ClericusTestCase(AioHTTPTestCase):
             "GET",
             "/log-out/",
         )
-        resp = await self.client.request("GET", "/me/")
         return None
