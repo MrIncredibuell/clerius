@@ -45,7 +45,8 @@ class ClericusTestCase(AioHTTPTestCase):
             json=user,
         )
         resp = await self.client.request("GET", "/me/")
-        return resp["currentUser"]
+        data = await resp.json()
+        return data["currentUser"]
 
     async def logout(self):
         resp = await self.client.request(
@@ -53,4 +54,4 @@ class ClericusTestCase(AioHTTPTestCase):
             "/log-out/",
         )
         resp = await self.client.request("GET", "/me/")
-        return resp["currentUser"]
+        return None
