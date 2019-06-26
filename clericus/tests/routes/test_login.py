@@ -18,7 +18,7 @@ class LoginTestCase(ClericusTestCase):
         data = await resp.json()
 
         user = {
-            "username": fake.name(),
+            "username": fake.user_name(),
             "email": fake.email(),
             "password": fake.password(),
         }
@@ -64,7 +64,7 @@ class LoginTestCase(ClericusTestCase):
     @unittest_run_loop
     async def testInvalidPassword(self):
         user = {
-            "username": fake.name(),
+            "username": fake.user_name(),
             "email": fake.email(),
             "password": fake.password(),
         }
@@ -99,7 +99,7 @@ class LoginTestCase(ClericusTestCase):
     @unittest_run_loop
     async def testInvalidEmail(self):
         user = {
-            "username": fake.name(),
+            "username": fake.user_name(),
             "email": fake.email(),
             "password": fake.password(),
         }

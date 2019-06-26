@@ -8,6 +8,7 @@ from ..parsing.fields import (
     NonBlankStringField,
     EmailField,
     StringField,
+    UsernameField,
     Field,
     DictField,
     ListField,
@@ -62,7 +63,7 @@ class SignUpEndpoint(Endpoint):
             "email": EmailField(
                 description="The email of the user being created"
             ),
-            "username": NonBlankStringField(
+            "username": UsernameField(
                 description="The username of the user being created"
             ),
             "password": NonBlankStringField(

@@ -1,3 +1,5 @@
+import string
+
 from .fields import Field, FieldTypes
 from ..errors import ParseError
 

@@ -30,7 +30,7 @@ class ClericusTestCase(AioHTTPTestCase):
 
     async def login(self):
         user = {
-            "username": fake.name(),
+            "username": fake.user_name(),
             "email": fake.email(),
             "password": fake.password(),
         }

@@ -16,7 +16,7 @@ class SignUpTestCase(ClericusTestCase):
         self.assertEqual(resp.status, 401)
         data = await resp.json()
         user = {
-            "username": fake.name(),
+            "username": fake.user_name(),
             "email": fake.email(),
             "password": fake.password(),
         }
@@ -63,13 +63,23 @@ class SignUpTestCase(ClericusTestCase):
         data = await resp.json()
         self.assertEqual(len(data["errors"]), 1)
 
+        user["username"] = "moo cow"
+        resp = await self.client.request(
+            "POST",
+            "/sign-up/",
+            json=user,
+        )
+        self.assertEqual(resp.status, 422)
+        data = await resp.json()
+        self.assertEqual(len(data["errors"]), 1)
+
     @unittest_run_loop
     async def testInvalidEmail(self):
         resp = await self.client.request("GET", "/me/")
         self.assertEqual(resp.status, 401)
         data = await resp.json()
         user = {
-            "username": fake.name(),
+            "username": fake.user_name(),
             "email": "moo",
             "password": fake.password(),
         }
@@ -99,7 +109,7 @@ class SignUpTestCase(ClericusTestCase):
         self.assertEqual(resp.status, 401)
         data = await resp.json()
         user = {
-            "username": fake.name().lower(),
+            "username": fake.user_name().lower(),
             "email": fake.email(),
             "password": fake.password(),
         }
@@ -156,7 +166,7 @@ class SignUpTestCase(ClericusTestCase):
         self.assertEqual(resp.status, 401)
         data = await resp.json()
         user = {
-            "username": fake.name(),
+            "username": fake.user_name(),
             "email": fake.email().lower(),
             "password": fake.password(),
         }
@@ -173,7 +183,7 @@ class SignUpTestCase(ClericusTestCase):
         data = await resp.json()
         self.assertEqual(data["currentUser"]["username"], user["username"])
 
-        user["username"] = fake.name()
+        user["username"] = fake.user_name()
         resp = await self.client.request(
             "POST",
             "/sign-up/",
@@ -185,7 +195,7 @@ class SignUpTestCase(ClericusTestCase):
 
         # Test case insensitive matching
         user["email"] = user["email"].upper()
-        user["username"] = fake.name()
+        user["username"] = fake.user_name()
         resp = await self.client.request(
             "POST",
             "/sign-up/",
@@ -197,7 +207,7 @@ class SignUpTestCase(ClericusTestCase):
 
         # Test with space
         user["email"] = "    " + user["email"] + "   "
-        user["username"] = fake.name()
+        user["username"] = fake.user_name()
         resp = await self.client.request(
             "POST",
             "/sign-up/",
