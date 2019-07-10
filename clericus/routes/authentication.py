@@ -23,6 +23,8 @@ from ..errors import ServerError
 import jwt
 import datetime
 import bson
+import urllib
+from aiohttp import ClientSession, web
 
 
 class SignUpEndpoint(Endpoint):
@@ -188,3 +190,55 @@ class MeEndpoint(Endpoint):
             "errors": ListField(DictField({})),
         }
     )
+
+
+def generateOAuthEndpoint(
+    clientID: str,
+    clientSecret: str,
+    redirectUri: str,
+    responseType: str,
+    grantType: str,
+    scope: str,
+    authorizationUri: str,
+    tokenUri: str,
+):
+    async def process(
+        self,
+        code=None,
+        state=None,
+    ):
+        if code == None:
+            raise web.HTTPFound(
+                location=authorizationUri + "?" + urllib.parse.urlencode({
+                    "response_type": responseType,
+                    "client_id": clientID,
+                    "redirect_uri": redirectUri,
+                    "scope": scope,
+                })
+            )
+
+        async with ClientSession() as session:
+            async with session.get(
+                tokenUri,
+                params={
+                    "code": code,
+                    "grant_type": grantType,
+                    "redirectUri": redirectUri,
+                    "client_id": clientID,
+                    "client_secret": clientSecret,
+                }
+            ) as response:
+                print(response.json())
+
+    class OAuthEndpoint(Endpoint):
+        Get = newMethod(
+            "GET",
+            "OAuth 2.0 login endpoint",
+            process=process,
+            queryParameters={
+                "code": StringField(optional=True),
+                "state": StringField(optional=True),
+            }
+        )
+
+    return OAuthEndpoint

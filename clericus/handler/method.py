@@ -103,6 +103,8 @@ class Method():
                 {"errors": [e.toJSON() for e in errors.errors]},
                 status=errors.errors[0].statusCode,
             )
+        except web.HTTPException as err:
+            raise err
         except HTTPError as e:
             return web.json_response(
                 {"errors": [e.toJSON()]},
