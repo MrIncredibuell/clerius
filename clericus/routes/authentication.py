@@ -201,6 +201,7 @@ def generateOAuthEndpoint(
     scope: str,
     authorizationUri: str,
     tokenUri: str,
+    handleTokenResponse=None,
 ):
     async def process(
         self,
@@ -223,12 +224,14 @@ def generateOAuthEndpoint(
                 params={
                     "code": code,
                     "grant_type": grantType,
-                    "redirectUri": redirectUri,
+                    "redirect_uri": redirectUri,
                     "client_id": clientID,
                     "client_secret": clientSecret,
                 }
             ) as response:
-                print(response.json())
+                token = await response.json()
+                if handleTokenResponse:
+                    await handleTokenResponse(token=token, )
 
     class OAuthEndpoint(Endpoint):
         Get = newMethod(
