@@ -18,8 +18,8 @@ def defaultSettings():
     }
 
 
-def parseConfig(filename="config.json"):
-    settings = copy.deepcopy(defaultSettings())
+def parseConfig(filename="config.json", default=defaultSettings):
+    settings = copy.deepcopy(default())
     if filename:
         settings.update(json.loads(open(filename).read()))
 

@@ -231,7 +231,10 @@ def generateOAuthEndpoint(
             ) as response:
                 token = await response.json()
                 if handleTokenResponse:
-                    await handleTokenResponse(token=token, )
+                    await handleTokenResponse(
+                        handler=self,
+                        token=token,
+                    )
 
     class OAuthEndpoint(Endpoint):
         Get = newMethod(
