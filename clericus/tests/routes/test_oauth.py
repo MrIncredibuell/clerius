@@ -20,10 +20,10 @@ class OAuthTestCase(ClericusTestCase):
     @unittest_run_loop
     async def testOauth(self):
 
-        print(self.app)
+        # print(self.app)
 
         resp = await self.client.request("GET", "/oauth/test/")
         # self.assertEqual(resp.status, 401)
         # data = await resp.json()
-        print(resp)
+        # print(resp)
         # print(data)

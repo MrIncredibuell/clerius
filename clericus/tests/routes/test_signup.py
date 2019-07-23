@@ -3,13 +3,13 @@ sys.path.append(".")
 
 import unittest
 from aiohttp.test_utils import unittest_run_loop
-from ..test_case import ClericusTestCase
+from ..test_case import AuthenticatedClericusTestCase
 
 import faker
 fake = faker.Faker()
 
 
-class SignUpTestCase(ClericusTestCase):
+class SignUpTestCase(AuthenticatedClericusTestCase):
     @unittest_run_loop
     async def testSignup(self):
         resp = await self.client.request("GET", "/me/")
