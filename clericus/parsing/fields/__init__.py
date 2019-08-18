@@ -8,7 +8,7 @@ from .strings import (
     UsernameField,
 )
 
-from .numbers import IntegerField
+from .numbers import IntegerField, FloatField
 from .booleans import BoolField
 from .dates import DatetimeField
 from .lists import ListField

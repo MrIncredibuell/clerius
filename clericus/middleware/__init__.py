@@ -4,22 +4,23 @@ import bson
 import jwt
 
 
-@middleware
-async def logRequest(request, handler):
-    start = datetime.datetime.utcnow()
-    resp = await handler(request)
-    print(
-        resp.status,
-        request.method,
-        request.path,
-        getattr(
-            request,
-            "currentUser",
-            {"username": "Unauthenticated"},
-        )["username"],
-        f"{int((datetime.datetime.utcnow() - start).total_seconds() * 1000)}ms",
-    )
-    return resp
+def logger(usernameField="username"):
+    @middleware
+    async def logRequest(request, handler):
+        start = datetime.datetime.utcnow()
+        resp = await handler(request)
+        print(
+            resp.status,
+            request.method,
+            request.path,
+            getattr(
+                request,
+                "currentUser",
+                {usernameField: "Unauthenticated"},
+            )[usernameField],
+            f"{int((datetime.datetime.utcnow() - start).total_seconds() * 1000)}ms",
+        )
+        return resp
 
 
 def allowCors(origins):

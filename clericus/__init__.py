@@ -9,13 +9,13 @@ from .routes import (
     health as healthRoutes
 )
 from .config import defaultSettings
-from .middleware import logRequest, allowCors, removeServerHeader, authentication as authenticationMiddleware
+from .middleware import logger, allowCors, removeServerHeader, authentication as authenticationMiddleware
 
 from .handler import newMethod, Endpoint, Method
 
 
 class Clericus(web.Application):
-    def __init__(self, settings=None, logging=True):
+    def __init__(self, settings=None, logging=True, usernameField="username"):
         baseSettings = defaultSettings()
         baseSettings.update(settings or {})
         middlewares = [
@@ -25,7 +25,7 @@ class Clericus(web.Application):
         ]
 
         if logging:
-            middlewares.append(logRequest)
+            middlewares.append(logger(usernameField))
 
         middlewares.append(
             authenticationMiddleware(

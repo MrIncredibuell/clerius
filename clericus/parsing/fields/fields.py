@@ -16,6 +16,7 @@ class FieldTypes(str, enum.Enum):
     BOOL = "boolean"
     OBJECT = "object"
     INTEGER = "int"
+    FLOAT = "float"
 
 
 @dataclass
