@@ -27,9 +27,16 @@ def allowCors(origins):
     @middleware
     async def middle(request, handler):
         resp = await handler(request)
+        try:
+            origin = request.headers.get('Origin')[0]
+        except:
+            origin = None
         resp.headers["Access-Control-Allow-Credentials"] = "true"
-        for origin in origins:
+        if origin in origins:
             resp.headers.add("Access-Control-Allow-Origin", origin)
+        else:
+            defaultOrigin = origins[0] if origins else "*"
+            resp.headers.add("Access-Control-Allow-Origin", defaultOrigin)
         return resp
 
     return middle
