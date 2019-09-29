@@ -63,9 +63,11 @@ class Method():
     def unsetCookie(
         self,
         name,
+        domain,
     ):
         self.deletedCookies[name] = {
             "name": name,
+            "domain": domain,
         }
 
     def setHeader(self, name, value):

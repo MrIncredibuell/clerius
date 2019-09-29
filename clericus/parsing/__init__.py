@@ -225,7 +225,7 @@ class ResponseSerializer():
             response.set_cookie(**kwargs)
 
         for c in (deletedCookies or {}).values():
-            response.del_cookie(c["name"], )
+            response.del_cookie(c["name"], domain=c.get("domain", None))
 
         return response
 
