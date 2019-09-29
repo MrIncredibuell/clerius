@@ -63,7 +63,7 @@ class Method():
     def unsetCookie(
         self,
         name,
-        domain,
+        domain=None,
     ):
         self.deletedCookies[name] = {
             "name": name,
