@@ -220,7 +220,7 @@ class ResponseSerializer():
             }
 
             if c.get("domain", None):
-                kwargs["domain"] = c["domain"],
+                kwargs["domain"] = c["domain"]
 
             response.set_cookie(**kwargs)
 

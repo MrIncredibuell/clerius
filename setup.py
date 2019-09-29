@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="clericus",
-    version="0.0.3a11",
+    version="0.0.3a12",
     author="Joseph L Buell V",
     author_email="jlrbuellv@gmail.com",
     description=
