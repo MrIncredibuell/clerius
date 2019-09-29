@@ -46,6 +46,7 @@ class Method():
         self,
         name,
         value,
+        domain=None,
         secure=False,
         httpOnly=False,
         expires=None,
@@ -53,6 +54,7 @@ class Method():
         self.cookies[name] = {
             "name": name,
             "value": value,
+            "domain": domain,
             "secure": secure,
             "httpOnly": httpOnly,
             "expires": expires,

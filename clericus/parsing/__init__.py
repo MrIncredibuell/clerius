@@ -207,16 +207,22 @@ class ResponseSerializer():
                 value = c["value"].decode("utf")
             except:
                 value = c["value"]
-            response.set_cookie(
-                c["name"],
-                value,
-                secure=c["secure"],
-                httponly=c["httpOnly"],
-                expires=c.get(
+
+            kwargs = {
+                "name": c["name"],
+                "value": value,
+                "secure": c["secure"],
+                "httponly": c["httpOnly"],
+                "expires": c.get(
                     "expires",
                     datetime.datetime.utcnow() + datetime.timedelta(days=1)
                 )
-            )
+            }
+
+            if c.get("domain", None):
+                kwargs["domain"] = c["domain"],
+
+            response.set_cookie(**kwargs)
 
         for c in (deletedCookies or {}).values():
             response.del_cookie(c["name"], )

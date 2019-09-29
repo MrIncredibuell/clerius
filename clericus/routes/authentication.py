@@ -142,6 +142,7 @@ class LogOutEndpoint(Endpoint):
 
     async def process(self, ):
         self.unsetCookie("authentication", )
+        self.unsetCookie("currentUser", )
         return {}
 
     Get = newMethod(
