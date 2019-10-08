@@ -51,17 +51,14 @@ class DictField(Field):
         for name, outField in fields.items():
             try:
                 value = dictValue[name]
-
                 name = getattr(outField, "serializeTo", name) or name
 
                 try:
                     result[name] = outField.serialize(value)
-
                 except:
                     result[name] = value
             except KeyError as k:
                 if not outField.optional:
-                    print("MISSING FIELD FOR SERIALIZATION", k)
                     result[name] = None
 
         return result

@@ -45,22 +45,6 @@ class Clericus(web.Application):
             self.documentationHandler,
         )
 
-        # self.addEndpoint(
-        #     "/sign-up/",
-        #     authenticationRoutes.SignUpEndpoint,
-        # )
-        # self.addEndpoint(
-        #     "/log-in/",
-        #     authenticationRoutes.LogInEndpoint,
-        # )
-        # self.addEndpoint(
-        #     "/log-out/",
-        #     authenticationRoutes.LogOutEndpoint,
-        # )
-        # self.addEndpoint(
-        #     "/me/",
-        #     authenticationRoutes.MeEndpoint,
-        # )
         self.addEndpoint(
             "/healthy/",
             healthRoutes.HealthCheckEndpoint,

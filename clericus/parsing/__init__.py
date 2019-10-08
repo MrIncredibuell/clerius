@@ -159,15 +159,31 @@ class ResponseSerializer():
             if isinstance(self.__getattribute__(f), Field)
         }
 
-    async def serialize(
-        self,
-        result,
-        statusCode=200,
-        headers=None,
-        cookies=None,
-        deletedCookies=None,
-        dropBody=False,
-    ):
+    def makeResponse(self, body, statusCode, headers):
+        """
+        Convert a parsed body, statusCode, and headers into
+        an aiohttp.web.Response
+        """
+        if body != None:
+            response = web.json_response(
+                body,
+                status=statusCode,
+                headers=headers or {},
+            )
+        else:
+            response = web.Response(
+                None,
+                status=statusCode,
+                headers=headers or {},
+            )
+
+        return response
+
+    def parseResult(self, result):
+        """
+        Walk the list of fields and convert them into a
+        dictionary ready to be passed to self.makeResponse
+        """
         body = {}
         fields = self._getFields()
         for name, resultField in fields.items():
@@ -185,24 +201,18 @@ class ResponseSerializer():
 
             serializeTo = getattr(resultField, "serializeTo", name) or name
             body[serializeTo] = value
+        return body
 
-        headers = {k: "; ".join(vs) for k, vs in headers.items()}
-
-        if not dropBody:
-            response = web.json_response(
-                body,
-                status=statusCode,
-                headers=headers or {},
-            )
-        else:
-            response = web.Response(
-                None,
-                status=statusCode,
-                headers=headers or {},
-            )
-
+    def writeCookies(
+        self,
+        response,
+        cookies=None,
+        deletedCookies=None,
+    ):
+        """
+        Add/delete cookies to/from a response
+        """
         for c in (cookies or {}).values():
-
             try:
                 value = c["value"].decode("utf")
             except:
@@ -229,6 +239,33 @@ class ResponseSerializer():
 
         return response
 
+    async def serialize(
+        self,
+        result,
+        statusCode=200,
+        headers=None,
+        cookies=None,
+        deletedCookies=None,
+        dropBody=False,
+    ):
+        body = self.parseResult(result)
+        headers = headers or {}
+        headers = {k: "; ".join(vs) for k, vs in headers.items()}
+
+        response = self.makeResponse(
+            body=(body if not dropBody else None),
+            statusCode=statusCode,
+            headers=headers,
+        )
+
+        response = self.writeCookies(
+            response=response,
+            cookies=cookies,
+            deletedCookies=deletedCookies,
+        )
+
+        return response
+
     def describe(self):
         return {
             "body": {
@@ -240,3 +277,21 @@ class ResponseSerializer():
 
 class ResponseSerializerWithErrors(ResponseSerializer):
     errors = ListField(ErrorField)
+
+
+class HtmlResponseSerializer(ResponseSerializer):
+    def __init__(self, render=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.render = render
+
+    def parseResult(self, result):
+        if self.render:
+            return self.render(result)
+        return result
+
+    def makeResponse(self, body, statusCode, headers):
+        return web.Response(
+            body,
+            status=statusCode,
+            headers=headers,
+        )
