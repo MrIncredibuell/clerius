@@ -3,13 +3,7 @@ import asyncio
 
 from ...parsing import DictParser
 from ...parsing.fields import StringField, DictField
-
-
-def async_test(f):
-    def wrapper(self):
-        return asyncio.run(f(self))
-
-    return wrapper
+from ..test_case import async_test
 
 
 class TestParsing(unittest.TestCase):

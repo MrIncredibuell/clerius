@@ -1,17 +1,28 @@
+import json
+
 from aiohttp import web
 from aiohttp.web_middlewares import normalize_path_middleware
-import json
 from dataclasses import dataclass, field
 from types import SimpleNamespace as SN
 from typing import Sequence
+
 from .routes import (
-    authentication as authenticationRoutes, permissions as permissionRoutes,
-    health as healthRoutes
+    authentication as authenticationRoutes,
+    permissions as permissionRoutes,
+    health as healthRoutes,
 )
 from .config import defaultSettings
-from .middleware import logger, allowCors, removeServerHeader, authentication as authenticationMiddleware
-
-from .handler import newMethod, Endpoint, Method
+from .middleware import (
+    logger,
+    allowCors,
+    removeServerHeader,
+    authentication as authenticationMiddleware,
+)
+from .handler import (
+    newMethod,
+    Endpoint,
+    Method,
+)
 
 
 class Clericus(web.Application):
@@ -66,8 +77,10 @@ class Clericus(web.Application):
         self.documentation.append(cls.describe())
 
     async def documentationHandler(self, request: web.Request) -> web.Response:
+        docs = self.describe()
+
         return web.Response(
-            text=json.dumps(self.describe()),
+            text=json.dumps(docs),
             headers={"Content-Type": "application/json"}
         )
 

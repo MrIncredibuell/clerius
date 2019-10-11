@@ -1,8 +1,10 @@
-from aiohttp import web
-from .method import Method, newMethod
-
-from inspect import getdoc
 import json
+
+from aiohttp import web
+from inspect import getdoc
+
+from .method import Method, newMethod
+from ..documentation import requestDocumentationToApiBlueprint
 
 
 class Endpoint():
@@ -53,6 +55,8 @@ class Endpoint():
         self, request: web.Request, *args
     ) -> web.Response:
         docs = self.describe()
+
+        requestDocumentationToApiBlueprint(docs)
 
         return web.Response(
             text=json.dumps(docs),

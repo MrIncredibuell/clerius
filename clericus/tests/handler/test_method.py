@@ -6,14 +6,11 @@ from aiohttp.test_utils import make_mocked_request
 from ...handler import newMethod, Endpoint
 from ...parsing.fields import BoolField, StringField
 
-from ..test_case import ClericusTestCase, unittest_run_loop
-
-
-def async_test(f):
-    def wrapper(self):
-        return asyncio.run(f(self))
-
-    return wrapper
+from ..test_case import (
+    ClericusTestCase,
+    unittest_run_loop,
+    async_test,
+)
 
 
 class TestMethods(unittest.TestCase):

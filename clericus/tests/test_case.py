@@ -1,18 +1,25 @@
+import json
+import faker
 import sys
+import unittest
+import asyncio
+
 sys.path.append(".")
+fake = faker.Faker()
+
+from aiohttp.test_utils import AioHTTPTestCase, unittest_run_loop
 
 from .. import Clericus
 from ..config import defaultSettings, connectToDB
-
-import unittest
-from aiohttp.test_utils import AioHTTPTestCase, unittest_run_loop
-
-import json
-import faker
-fake = faker.Faker()
-
 from ..schemas import createCollections
 from ..routes import authentication as authenticationRoutes
+
+
+def async_test(f):
+    def wrapper(self):
+        return asyncio.run(f(self))
+
+    return wrapper
 
 
 class ClericusTestCase(AioHTTPTestCase):

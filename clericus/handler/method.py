@@ -1,9 +1,11 @@
-from ..parsing import RequestParser, ResponseSerializer, DictParser
+import inspect
+import traceback
+
 from aiohttp import web
 from inspect import getdoc
+
+from ..parsing import RequestParser, ResponseSerializer, DictParser
 from ..errors import HTTPError, ClientError, ErrorList
-import traceback
-import inspect
 
 
 class Method():
