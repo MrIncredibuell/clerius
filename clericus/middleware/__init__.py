@@ -37,6 +37,18 @@ def allowCors(origins):
         else:
             defaultOrigin = origins[0] if origins else "*"
             resp.headers.add("Access-Control-Allow-Origin", defaultOrigin)
+
+        try:
+            requestHeaders = request.headers.get(
+                'Access-Control-Request-Headers'
+            )
+            if requestHeaders:
+                resp.headers.add(
+                    "Access-Control-Allow-Headers", requestHeaders
+                )
+        except:
+            pass
+
         return resp
 
     return middle
