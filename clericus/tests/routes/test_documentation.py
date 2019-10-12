@@ -17,8 +17,8 @@ class TestDocumentation(ClericusTestCase):
     async def get_application(self):
         app = await super().get_application()
 
-        async def process(self, exampleValue):
-            return {"result": exampleValue + " cow"}
+        async def process(self, exampleValue, q=""):
+            return {"result": exampleValue + " cow" + q}
 
         getMethod = newMethod(
             httpMethod="Get",
@@ -27,6 +27,17 @@ class TestDocumentation(ClericusTestCase):
             urlParameters={
                 "exampleValue": StringField(
                     description="A string to modify",
+                ),
+            },
+            queryParameters={
+                "q": StringField(
+                    description="A query parameter",
+                    optional=True,
+                ),
+                "moo": StringField(
+                    description="Another query parameter",
+                    optional=False,
+                    default="moo",
                 ),
             },
             responseFields={
@@ -69,7 +80,7 @@ class TestDocumentation(ClericusTestCase):
         )
 
         self.assertEqual(
-            data["methods"]["get"]["request"]["url"]["exampleValue"]
+            data["methods"]["get"]["requestParameters"]["url"]["exampleValue"]
             ["description"],
             "A string to modify",
         )
@@ -89,7 +100,7 @@ class TestDocumentation(ClericusTestCase):
         )
 
         self.assertEqual(
-            data["methods"]["get"]["request"]["url"]["exampleValue"]
+            data["methods"]["get"]["requestParameters"]["url"]["exampleValue"]
             ["description"],
             "A string to modify",
         )

@@ -132,7 +132,7 @@ class Method():
     def describe(self):
         return {
             "description": getdoc(self),
-            "request": self.Parser().describe(),
+            "requestParameters": self.Parser().describe(),
             "response": self.Serializer().describe(),
         }
 
