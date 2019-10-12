@@ -24,6 +24,7 @@ class Field():
     optional: bool = False
     missingStatusCode: int = None
     default: Any = None
+    exampleValues: List[Any] = field(default_factory=list)
     allowedTypes: List[str] = field(default_factory=list)
     description: str = ""
     parseFrom: str = None
@@ -51,6 +52,7 @@ class Field():
             "optional": self.optional,
             "default": self.default,
             "description": self.description,
+            "exampleValues": self.exampleValues,
         }
 
     def __repr__(self):

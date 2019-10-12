@@ -47,11 +47,39 @@ class TestDocumentation(ClericusTestCase):
             },
         )
 
+        postMethod = newMethod(
+            httpMethod="Post",
+            description="This is a test handler",
+            process=process,
+            urlParameters={
+                "exampleValue": StringField(
+                    description="A string to modify",
+                ),
+            },
+            bodyParameters={
+                "q": StringField(
+                    description="A body parameter",
+                    optional=True,
+                ),
+                "moo": StringField(
+                    description="Another body parameter",
+                    optional=False,
+                    default="moo",
+                ),
+            },
+            responseFields={
+                "result": StringField(
+                    description="The value with \"cow\" appended",
+                ),
+            },
+        )
+
         class end(Endpoint):
             """
             An example endpoint.
             """
             Get = getMethod
+            Post = postMethod
 
         app.addEndpoint(
             "/stuff/{exampleValue}/",
