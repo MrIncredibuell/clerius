@@ -18,7 +18,7 @@ def requestDocumentationToApiBlueprint(docs):
         queryParameters = "{?" + queryParameterString + "}"
 
     s = f"""
-# {docs["name"]} [{docs["path"]}{queryParameters}]
+# {docs.get("name", "")} [{docs["path"]}{queryParameters}]
 
 {docs["description"]}
     """
@@ -76,8 +76,6 @@ def requestDocumentationToApiBlueprint(docs):
                 description = parameter.get("description")
 
                 s += f"\t+ {name} ({allowedTypes}) - {description}\n"
-
-    print(s)
 
     return s
 

@@ -1,9 +1,11 @@
 import json
+import markdown
 
 from aiohttp import web
 from inspect import getdoc
 
 from .method import Method, newMethod
+from ..parsing import handleAcceptHeader
 from ..documentation import requestDocumentationToApiBlueprint
 
 
@@ -55,13 +57,34 @@ class Endpoint():
         self, request: web.Request, *args
     ) -> web.Response:
         docs = self.describe()
+        acceptHeader = request.headers.get("Accept")
 
-        requestDocumentationToApiBlueprint(docs)
+        if acceptHeader:
+            contentType, _ = handleAcceptHeader(
+                acceptHeader,
+                [
+                    "text/html",
+                    "application/json",
+                ],
+            )
+        else:
+            contentType = "application/json"
 
-        return web.Response(
-            text=json.dumps(docs),
-            headers={"Content-Type": "application/json"}
-        )
+        if contentType == "text/html":
+            md = requestDocumentationToApiBlueprint(docs)
+            htmlContent = markdown.markdown(md)
+            html = f"<html><body>{htmlContent}</body></html>"
+
+            return web.Response(
+                text=html,
+                headers={"Content-Type": "text/html"},
+            )
+
+        else:
+            return web.Response(
+                text=json.dumps(docs),
+                headers={"Content-Type": "application/json"},
+            )
 
     def describe(self):
         docs = {

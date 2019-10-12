@@ -1,4 +1,5 @@
 import json
+import markdown
 
 from aiohttp import web
 from aiohttp.web_middlewares import normalize_path_middleware
@@ -23,6 +24,9 @@ from .handler import (
     Endpoint,
     Method,
 )
+
+from .parsing import handleAcceptHeader
+from .documentation import requestDocumentationToApiBlueprint
 
 
 class Clericus(web.Application):
@@ -79,10 +83,36 @@ class Clericus(web.Application):
     async def documentationHandler(self, request: web.Request) -> web.Response:
         docs = self.describe()
 
-        return web.Response(
-            text=json.dumps(docs),
-            headers={"Content-Type": "application/json"}
-        )
+        acceptHeader = request.headers.get("Accept")
+
+        if acceptHeader:
+            contentType, _ = handleAcceptHeader(
+                acceptHeader,
+                [
+                    "text/html",
+                    "application/json",
+                ],
+            )
+        else:
+            contentType = "application/json"
+
+        if contentType == "text/html":
+            md = "# Documentation\n"
+            for endpoint in docs["endpoints"]:
+                md += requestDocumentationToApiBlueprint(endpoint)
+            htmlContent = markdown.markdown(md)
+            html = f"<html><body>{htmlContent}</body></html>"
+
+            return web.Response(
+                text=html,
+                headers={"Content-Type": "text/html"},
+            )
+
+        else:
+            return web.Response(
+                text=json.dumps(docs),
+                headers={"Content-Type": "application/json"},
+            )
 
     def describe(self):
         return {

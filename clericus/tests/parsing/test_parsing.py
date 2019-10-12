@@ -1,7 +1,7 @@
 import unittest
 import asyncio
 
-from ...parsing import DictParser
+from ...parsing import DictParser, handleAcceptHeader
 from ...parsing.fields import StringField, DictField
 from ..test_case import async_test
 
@@ -38,6 +38,16 @@ class TestParsing(unittest.TestCase):
         self.assertEqual(parsed["dictOne"]["stringThree"], "moo")
         self.assertEqual(parsed["dictOne"]["stringFour"], "cow")
         self.assertEqual(parsed["dictOne"]["dictTwo"]["x"], 1)
+
+
+class TestAcceptHeaderParsing(unittest.TestCase):
+    def test_simple_parsing(self):
+        contentType, parameters = handleAcceptHeader(
+            "text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5",
+            ["text/html", "text/plain"],
+        )
+        self.assertEqual(contentType, "text/html")
+        self.assertEqual(parameters["level"], "1")
 
 
 if __name__ == '__main__':

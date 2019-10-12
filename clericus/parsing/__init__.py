@@ -1,5 +1,5 @@
 from aiohttp import web
-from typing import Dict
+from typing import Dict, List
 import json
 from .fields import Field, ListField, ErrorField
 from .errors import ParseError
@@ -181,7 +181,7 @@ class ResponseSerializer():
 
     def parseResult(self, result):
         """
-        Walk the list of fields and convert them into a
+        Walk the list of fields and convert them into a(stinrg)
         dictionary ready to be passed to self.makeResponse
         """
         body = {}
@@ -295,3 +295,60 @@ class HtmlResponseSerializer(ResponseSerializer):
             status=statusCode,
             headers=headers,
         )
+
+
+def handleAcceptHeader(
+    header: str,  # the header value
+    serverTypes: List[str],
+) -> str:
+    """
+    Given the value of an HTTP request Accept header and a list
+    of possible types the server supports, and any requested parameters
+    """
+    clientTypes = [h.strip() for h in header.split(",")]
+    clientTypesWithParameters = []
+    for ii, t in enumerate(clientTypes[::-1]):
+        contentType, *parameters = t.split(";")
+        contentType = contentType.strip().lower()
+
+        parameters = [p.strip() for p in parameters]
+        parsedParameters = {}
+        quality = 1.0
+        for p in parameters:
+            key, *value = p.split("=")
+            value = "=".join(value).strip()
+            if key == "q":
+                try:
+                    quality = float(value)
+                except:
+                    raise ParseError(
+                        message="Invalid Accept Parameter, q must be a number",
+                    )
+            parsedParameters[key] = value
+
+        clientTypesWithParameters.append({
+            "contentType": contentType,
+            "quality": (quality, ii),
+            "parameters": parsedParameters,
+        })
+
+    clientTypesWithParameters = sorted(
+        clientTypesWithParameters,
+        key=lambda k: k["quality"],
+        reverse=True,
+    )
+
+    for t in clientTypesWithParameters:
+        contentType = t["contentType"]
+        parameters = t["parameters"]
+        if contentType == "*/*":
+            return serverTypes[0], parameters
+        elif contentType.endswith("/*"):
+            for serverType in serverTypes:
+                if serverType.startswith(contentType[:-1]):
+                    return serverType, parameters
+
+        elif contentType in serverTypes:
+            return contentType, parameters
+
+    return None, None

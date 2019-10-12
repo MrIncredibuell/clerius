@@ -28,5 +28,6 @@ setuptools.setup(
         "bcrypt>=3.1.6",
         "dnspython>=1.16.0",
         "faker>=1.0.7",
+        "markdown>=3.1.1",
     ],
 )
