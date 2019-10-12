@@ -18,7 +18,7 @@ def requestDocumentationToApiBlueprint(docs):
         queryParameters = "{?" + queryParameterString + "}"
 
     s = f"""
-# {docs.get("name", "")} [{docs["path"]}{queryParameters}]
+# {docs.get("name", "Unnamed Route")} [{docs["path"]}{queryParameterString}]
 
 {docs["description"]}
     """
@@ -58,7 +58,7 @@ def requestDocumentationToApiBlueprint(docs):
                     "optional"
                 ) else "required"
 
-                description = parameter.get("description")
+                description = parameter.get("description") or ""
 
                 default = parameter.get("default")
                 s += f"\n\t+ {name} ({allowedTypes}, {optional}) - {description}\n"
