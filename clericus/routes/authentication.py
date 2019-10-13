@@ -57,6 +57,7 @@ class SignUpEndpoint(Endpoint):
         return {"success": "yes"}
 
     Post = newMethod(
+        name="Sign Up",
         httpMethod="POST",
         description=
         "Create a new user with the given username, email, and password.",
@@ -114,6 +115,7 @@ class LogInEndpoint(Endpoint):
         }
 
     Post = newMethod(
+        name="Log In",
         httpMethod="POST",
         description="Log in the use with the given email and password",
         process=postProcess,
@@ -146,6 +148,7 @@ class LogOutEndpoint(Endpoint):
         return {}
 
     Get = newMethod(
+        name="Log Out",
         httpMethod="GET",
         description=
         "Log out the current user by unsetting the relevant cookies",
@@ -179,6 +182,7 @@ class MeEndpoint(Endpoint):
         }
 
     Get = newMethod(
+        name="Get Current User",
         httpMethod="GET",
         description="Return information about the currently logged in user",
         process=processGet,
@@ -239,8 +243,9 @@ def generateOAuthEndpoint(
 
     class OAuthEndpoint(Endpoint):
         Get = newMethod(
-            "GET",
-            "OAuth 2.0 login endpoint",
+            name="Oauth Login",
+            httpMethod="GET",
+            description="OAuth 2.0 login endpoint",
             process=process,
             queryParameters={
                 "code": StringField(optional=True),

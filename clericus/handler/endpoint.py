@@ -12,8 +12,8 @@ from ..documentation import requestDocumentationToApiBlueprint
 class Endpoint():
     def __init__(
         self,
+        name: str,
         settings=None,
-        name: str = None,
         path: str = None,
     ):
         self.settings = settings or {}
@@ -63,8 +63,8 @@ class Endpoint():
             contentType, _ = handleAcceptHeader(
                 acceptHeader,
                 [
-                    "text/html",
                     "application/json",
+                    "text/html",
                 ],
             )
         else:
@@ -98,7 +98,7 @@ class Endpoint():
             docs["path"] = self.path
 
         docs["methods"] = {
-            methodName: methodClass().describe()
+            methodName: methodClass("").describe()
             for methodName, methodClass in self.methods().items()
         }
         return docs
@@ -118,8 +118,10 @@ class Endpoint():
         name = getattr(self, 'name', 'Unknown Handler')
 
         return newMethod(
+            name="Options",
             httpMethod="OPTIONS",
-            description=f"OPTIONS handler for {name}",
+            description=
+            f"Returns possible methods and content types for this endpoint.",
             process=process,
         )
 
@@ -128,6 +130,8 @@ class Endpoint():
             """
             HEAD Handler
             """
+            name = "Head"
+            description = "Returns the same response as a get, but with no body."
             Parser = getMethod.Parser
             process = getMethod.process
 

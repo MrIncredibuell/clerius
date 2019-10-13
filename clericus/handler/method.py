@@ -9,6 +9,9 @@ from ..errors import HTTPError, ClientError, ErrorList
 
 
 class Method():
+    name = "Handler"
+    description = ""
+
     def __init__(
         self,
         settings=None,
@@ -131,13 +134,15 @@ class Method():
 
     def describe(self):
         return {
-            "description": getdoc(self),
+            "name": self.name,
+            "description": getattr(self, "description", getdoc(self)),
             "requestParameters": self.Parser().describe(),
             "response": self.Serializer().describe(),
         }
 
 
 def newMethod(
+    name,
     httpMethod,
     description,
     process,
@@ -170,8 +175,10 @@ def newMethod(
             )
 
     attributes = {
+        "name": name,
         "process": process,
         "__doc__": description,
+        "description": description,
         "Parser": type(
             "Parser",
             (RequestParser, ),

@@ -3,6 +3,7 @@ from typing import List
 
 def requestDocumentationToApiBlueprint(docs):
     queryParameters = []
+
     for method in docs.get("methods", {}).values():
         queryParameters += method.get(
             "requestParameters",
@@ -24,7 +25,10 @@ def requestDocumentationToApiBlueprint(docs):
     """
 
     for method, data in docs["methods"].items():
-        s += f"""\n## {data["description"]} [{method.upper()}]\n"""
+        s += f"""\n## {data["name"]} [{method.upper()}]\n"""
+
+        if data.get("description"):
+            s += f"{data['description']}\n"
 
         parameters = data.get(
             "requestParameters",
@@ -50,32 +54,19 @@ def requestDocumentationToApiBlueprint(docs):
             s += "\n+ Parameters\n"
 
             for name, parameter in displayableParameters:
-                allowedTypes = _allowedTypesToString(
-                    parameter.get("allowedTypes", [])
+                s += _parameterToMarkdown(
+                    name=name,
+                    parameter=parameter,
                 )
-
-                optional = "optional" if parameter.get(
-                    "optional"
-                ) else "required"
-
-                description = parameter.get("description") or ""
-
-                default = parameter.get("default")
-                s += f"\n\t+ {name} ({allowedTypes}, {optional}) - {description}\n"
-                if default is not None:
-                    s += f"\t\t+ Default: `{default}`\n`"
 
         if bodyParameters:
             s += "\n Attributes\n"
 
             for name, parameter in bodyParameters:
-                allowedTypes = _allowedTypesToString(
-                    parameter.get("allowedTypes", [])
+                s += _parameterToMarkdown(
+                    name=name,
+                    parameter=parameter,
                 )
-
-                description = parameter.get("description")
-
-                s += f"\t+ {name} ({allowedTypes}) - {description}\n"
 
     return s
 
@@ -88,3 +79,27 @@ def _allowedTypesToString(allowedTypes: List) -> str:
     else:
         allowedTypesString = "any"
     return allowedTypesString
+
+
+def _parameterToMarkdown(name: str, parameter: dict):
+    s = ""
+    allowedTypes = _allowedTypesToString(parameter.get("allowedTypes", []))
+
+    optional = "optional" if parameter.get("optional") else "required"
+
+    description = parameter.get("description") or ""
+
+    default = parameter.get("default")
+
+    s += f"\n\t+ {name} ({allowedTypes}, {optional}) - {description}\n"
+
+    if default is not None:
+        s += f"\t\t+ Default: `{default}`\n`"
+
+    if parameter.get("allowedValues"):
+        s += "\t\t+ Members\n"
+
+        for value in parameter["allowedValues"]:
+            s += f"\t\t\t+ `{value}`"
+
+    return s

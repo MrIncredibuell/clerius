@@ -45,6 +45,7 @@ class ExampleEchoEndpoint(Endpoint):
         return {"echo": phrase * times}
 
     Get = newMethod(
+        name="echo",
         httpMethod="GET",
         description="Echo the string given in the query",
         process=echo,

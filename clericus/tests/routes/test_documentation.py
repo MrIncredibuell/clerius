@@ -4,7 +4,7 @@ import json
 from aiohttp.test_utils import make_mocked_request
 
 from ...handler import newMethod, Endpoint
-from ...parsing.fields import BoolField, StringField
+from ...parsing.fields import BoolField, StringField, EnumeratedStringField
 
 from ..test_case import (
     ClericusTestCase,
@@ -21,6 +21,7 @@ class TestDocumentation(ClericusTestCase):
             return {"result": exampleValue + " cow" + q}
 
         getMethod = newMethod(
+            name="Test GET Method",
             httpMethod="Get",
             description="This is a test handler",
             process=process,
@@ -48,8 +49,9 @@ class TestDocumentation(ClericusTestCase):
         )
 
         postMethod = newMethod(
+            name="Test POST Method",
             httpMethod="Post",
-            description="This is a test handler",
+            description="This is a test post handler",
             process=process,
             urlParameters={
                 "exampleValue": StringField(
@@ -61,10 +63,15 @@ class TestDocumentation(ClericusTestCase):
                     description="A body parameter",
                     optional=True,
                 ),
-                "moo": StringField(
-                    description="Another body parameter",
+                "animal": EnumeratedStringField(
+                    description="An enumerated parameter",
                     optional=False,
-                    default="moo",
+                    default="cow",
+                    allowedValues=[
+                        "cow",
+                        "chicken",
+                        "pig",
+                    ]
                 ),
             },
             responseFields={
@@ -89,7 +96,7 @@ class TestDocumentation(ClericusTestCase):
         return app
 
     @unittest_run_loop
-    async def testBaseDocumentation(self):
+    async def testBaseDocumentationJson(self):
         resp = await self.client.request("GET", "/")
         self.assertEqual(resp.status, 200)
         data = await resp.json()
@@ -114,7 +121,19 @@ class TestDocumentation(ClericusTestCase):
         )
 
     @unittest_run_loop
-    async def testEndpointDocumentation(self):
+    async def testBaseDocumentationHtml(self):
+        resp = await self.client.request(
+            "GET",
+            "/",
+            headers={
+                "Accept": "text/html",
+            },
+        )
+        self.assertEqual(resp.status, 200)
+        data = await resp.text()
+
+    @unittest_run_loop
+    async def testEndpointDocumentationJson(self):
         resp = await self.client.request("GET", "/documentation/stuff/moo/")
         self.assertEqual(resp.status, 200)
         data = await resp.json()
@@ -132,3 +151,15 @@ class TestDocumentation(ClericusTestCase):
             ["description"],
             "A string to modify",
         )
+
+    @unittest_run_loop
+    async def testEndpointDocumentationHtml(self):
+        resp = await self.client.request(
+            "GET",
+            "/documentation/stuff/moo/",
+            headers={
+                "Accept": "text/html",
+            },
+        )
+        self.assertEqual(resp.status, 200)
+        data = await resp.text()

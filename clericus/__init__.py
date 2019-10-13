@@ -63,6 +63,7 @@ class Clericus(web.Application):
         self.addEndpoint(
             "/healthy/",
             healthRoutes.HealthCheckEndpoint,
+            name="Health Check",
         )
 
     def addEndpoint(self, path, handlerClass, name=None):
@@ -89,8 +90,8 @@ class Clericus(web.Application):
             contentType, _ = handleAcceptHeader(
                 acceptHeader,
                 [
-                    "text/html",
                     "application/json",
+                    "text/html",
                 ],
             )
         else:

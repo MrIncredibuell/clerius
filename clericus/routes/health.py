@@ -34,6 +34,7 @@ class HealthCheckEndpoint(Endpoint):
             raise ServerError(message="Server is unhealthy")
 
     Get = newMethod(
+        name="Health Check",
         httpMethod="Get",
         description="""Return the status of the server""",
         process=getProcess,

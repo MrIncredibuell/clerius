@@ -20,6 +20,7 @@ class TestMethods(unittest.TestCase):
             return {"ok": True, "text": "stuff"}
 
         method = newMethod(
+            name="Test Method",
             httpMethod="Get",
             description="This is a test handler",
             process=process,
@@ -46,6 +47,7 @@ class TestUrlParameters(ClericusTestCase):
             return {"result": value + " cow"}
 
         getMethod = newMethod(
+            name="Test Method",
             httpMethod="Get",
             description="This is a test handler",
             process=process,

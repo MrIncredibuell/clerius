@@ -2,6 +2,7 @@ from .fields import Field, JwtField
 
 from .strings import (
     StringField,
+    EnumeratedStringField,
     NoWhitespaceStringField,
     NonBlankStringField,
     EmailField,

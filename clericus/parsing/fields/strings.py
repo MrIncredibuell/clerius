@@ -9,6 +9,9 @@ from typing import Any, List, Dict
 
 @dataclass
 class StringField(Field):
+    """
+    A generic string parameter
+    """
     allowedTypes: List = field(default_factory=lambda: [FieldTypes.STRING])
 
     def parser(self, value):
@@ -19,10 +22,34 @@ class StringField(Field):
 
 
 @dataclass
+class EnumeratedStringField(Field):
+    """
+    A string parameter which must be one of a particular set of values
+    """
+    allowedTypes: List = field(default_factory=lambda: [FieldTypes.STRING])
+    allowedValues: List = field(default_factory=lambda: [])
+
+    def parser(self, value):
+        originalValue = value
+        value = super().parser(value)
+        if value not in self.allowedValues:
+            raise ParseError(
+                message=
+                f"\"{originalValue}\" is not in {str(self.allowedValues)}"
+            )
+        return value
+
+    def describe(self):
+        doc = super().describe()
+        doc["allowedValues"] = self.allowedValues
+        return doc
+
+
+@dataclass
 class NoWhitespaceStringField(StringField):
     """
-        A string field where leading/trailing whitespace
-        should be trimmed.
+    A string field where leading/trailing whitespace
+    should be trimmed.
     """
 
     def normalizer(self, value):
