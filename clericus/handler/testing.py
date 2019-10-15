@@ -1,3 +1,5 @@
+import json
+
 from aiohttp.test_utils import AioHTTPTestCase
 from dataclasses import dataclass, field
 
@@ -45,6 +47,24 @@ class HttpTest():
             async def get_application(self):
                 return appClass(settings, logging=False)
 
+            async def compareResponses(self, expected, received):
+                if expected.statusCode is not None:
+                    self.assertEqual(
+                        expectedResponse.statusCode,
+                        received.status,
+                    )
+                if expected.body is not None:
+                    receivedBody = await received.text()
+                    # check json contents, rather than raw equality
+                    if "application/json" in received.headers.get(
+                        "Content-Type"
+                    ):
+                        expectedJson = json.loads(expected.body)
+                        receivedJson = json.loads(receivedBody)
+                        self.assertDictEqual(expectedJson, receivedJson)
+                    else:
+                        self.assterEqual(expected.body, receivedBody)
+
             @unittest_run_loop
             async def testRequest(self):
                 # print("in testRequest")
@@ -55,11 +75,10 @@ class HttpTest():
                     headers=expectedRequest.headers,
                 )
                 print(await response.text())
-                if expectedResponse.statusCode is not None:
-                    self.assertEqual(
-                        expectedResponse.statusCode,
-                        response.status,
-                    )
+                await self.compareResponses(
+                    expectedResponse,
+                    response,
+                )
                 return
 
         return TestCase

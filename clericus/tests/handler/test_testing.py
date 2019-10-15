@@ -40,8 +40,11 @@ getMethod = newMethod(
     },
     tests=[
         HttpTest(
-            request=TestRequest(path="/stuff/moo"),
-            response=TestResponse(statusCode=200),
+            request=TestRequest(path="/stuff/moo", ),
+            response=TestResponse(
+                statusCode=200,
+                body=json.dumps({"result": "moo cow"}, indent=1),
+            ),
         )
     ]
 )
