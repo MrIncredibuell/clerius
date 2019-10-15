@@ -140,6 +140,10 @@ class Method():
             "description": getattr(self, "description", getdoc(self)),
             "requestParameters": self.Parser().describe(),
             "response": self.Serializer().describe(),
+            "examples": [{
+                "request": test.request,
+                "response": test.response,
+            } for test in self.getTests()]
         }
 
     def getTests(self):

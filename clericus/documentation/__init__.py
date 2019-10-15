@@ -1,3 +1,5 @@
+import textwrap
+
 from typing import List
 
 
@@ -67,6 +69,13 @@ def requestDocumentationToApiBlueprint(docs):
                     name=name,
                     parameter=parameter,
                 )
+        for example in data.get("examples", []):
+
+            s += _testCaseToMarkdown(
+                request=example["request"],
+                response=example["response"],
+                name="Unnamed",
+            )
 
     return s
 
@@ -100,6 +109,18 @@ def _parameterToMarkdown(name: str, parameter: dict):
         s += "\t\t+ Members\n"
 
         for value in parameter["allowedValues"]:
-            s += f"\t\t\t+ `{value}`"
+            s += f"\t\t\t+ `{value}`\n"
+
+    return s
+
+
+def _testCaseToMarkdown(request, response, name=None):
+    s = f"+ Request {name}\n\n"
+    if request.body:
+        s += textwrap.indent(request.body, "\t") + "\n"
+
+    s += f"+ Response {response.statusCode}\n\n"
+    if response.body:
+        s += textwrap.indent(response.body, "\t") + "\n"
 
     return s
