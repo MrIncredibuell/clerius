@@ -103,6 +103,12 @@ class Endpoint():
         }
         return docs
 
+    def getTests(self):
+        tests = []
+        for method in self.methods().values():
+            tests += method(settings=self.settings).getTests()
+        return tests
+
     def generateOptionsClass(self, methods, settings=None):
         methodString = ", ".join([m.upper() for m in methods])
 

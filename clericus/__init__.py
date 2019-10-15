@@ -3,7 +3,6 @@ import markdown
 
 from aiohttp import web
 from aiohttp.web_middlewares import normalize_path_middleware
-from dataclasses import dataclass, field
 from types import SimpleNamespace as SN
 from typing import Sequence
 
@@ -51,6 +50,7 @@ class Clericus(web.Application):
         super().__init__(middlewares=middlewares, )
 
         self.documentation = []
+        self.tests = []
 
         self["settings"] = baseSettings
 
@@ -80,6 +80,7 @@ class Clericus(web.Application):
         )
 
         self.documentation.append(cls.describe())
+        self.tests += cls.getTests()
 
     async def documentationHandler(self, request: web.Request) -> web.Response:
         docs = self.describe()
@@ -121,6 +122,15 @@ class Clericus(web.Application):
                 self.documentation,
                 key=lambda k: k["path"],
             )
+        }
+
+    def getTests(self):
+        return {
+            f"test{n+1}": t.generateTestCase(
+                settings=self["settings"],
+                appClass=self.__class__,
+            )
+            for n, t in enumerate(self.tests)
         }
 
     def runApp(self):

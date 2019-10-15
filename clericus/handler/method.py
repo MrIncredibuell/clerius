@@ -19,12 +19,14 @@ class Method():
         headers=None,
         cookies=None,
         deletedCookies=None,
+        tests=[],
     ):
         self.statusCode = statusCode
         self.headers = headers or {}
         self.cookies = cookies or {}
         self.deletedCookies = deletedCookies or {}
         self.settings = settings or {}
+        self.tests = tests or getattr(self, "tests", [])
 
     class Parser(RequestParser):
         pass
@@ -140,6 +142,9 @@ class Method():
             "response": self.Serializer().describe(),
         }
 
+    def getTests(self):
+        return self.tests or []
+
 
 def newMethod(
     name,
@@ -152,6 +157,7 @@ def newMethod(
     headerParameters=None,
     bodyParameters=None,
     responseFields=None,
+    tests=None,
 ):
     """
     Create a new class for the given http method, filling in the
@@ -189,6 +195,7 @@ def newMethod(
             (ResponseSerializer, ),
             responseFields or {},  # Can't be None
         ),
+        "tests": tests or [],
     }
 
     return type(
