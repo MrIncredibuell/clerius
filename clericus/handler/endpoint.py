@@ -1,11 +1,10 @@
-import json
 import markdown
 
 from aiohttp import web
 from inspect import getdoc
 
 from .method import Method, newMethod
-from ..parsing import handleAcceptHeader
+from ..parsing import handleAcceptHeader, json
 from ..documentation import requestDocumentationToApiBlueprint
 
 

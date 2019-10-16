@@ -1,4 +1,4 @@
-import json
+from .parsing import json
 import markdown
 
 from aiohttp import web

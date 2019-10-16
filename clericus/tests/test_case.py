@@ -1,4 +1,3 @@
-import json
 import faker
 import sys
 import unittest
@@ -13,6 +12,7 @@ from .. import Clericus
 from ..config import defaultSettings, connectToDB
 from ..schemas import createCollections
 from ..routes import authentication as authenticationRoutes
+from ..parsing import json
 
 
 def async_test(f):

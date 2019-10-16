@@ -1,11 +1,13 @@
 from aiohttp import web
 from typing import Dict, List
-import json
+
 from .fields import Field, ListField, ErrorField
 from .errors import ParseError
 from ..errors import ClientError, ErrorList
 import datetime
 import inspect
+
+from . import json
 
 
 class DictParser():

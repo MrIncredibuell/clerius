@@ -1,4 +1,4 @@
-import json
+from ..parsing import json
 
 from aiohttp.test_utils import AioHTTPTestCase
 from dataclasses import dataclass, field
@@ -67,14 +67,12 @@ class HttpTest():
 
             @unittest_run_loop
             async def testRequest(self):
-                # print("in testRequest")
                 response = await self.client.request(
                     method=expectedRequest.method,
                     path=expectedRequest.path,
                     data=expectedRequest.body,
                     headers=expectedRequest.headers,
                 )
-                print(await response.text())
                 await self.compareResponses(
                     expectedResponse,
                     response,

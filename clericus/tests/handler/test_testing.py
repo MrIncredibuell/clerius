@@ -1,10 +1,10 @@
 import unittest
 import asyncio
-import json
 from aiohttp.test_utils import make_mocked_request
 
 from ...handler import newMethod, Endpoint
 from ...handler.testing import HttpTest, TestRequest, TestResponse
+from ...parsing import json
 from ...parsing.fields import BoolField, StringField, EnumeratedStringField
 
 from ..test_case import (
