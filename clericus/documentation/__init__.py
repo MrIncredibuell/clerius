@@ -114,12 +114,15 @@ def _parameterToMarkdown(name: str, parameter: dict):
     return s
 
 
-def _testCaseToMarkdown(request, response, name=None):
-    s = f"+ Request {name}\n\n"
+def _testCaseToMarkdown(request, response, name=""):
+    contentType = request.headers.get("Content-Type", "application/json")
+
+    s = f"+ Request {name} ({contentType})\n\n"
     if request.body:
         s += textwrap.indent(request.body, "\t") + "\n"
 
-    s += f"+ Response {response.statusCode}\n\n"
+    contentType = request.headers.get("Content-Type", "application/json")
+    s += f"+ Response {response.statusCode} ({contentType})\n\n"
     if response.body:
         s += textwrap.indent(response.body, "\t") + "\n"
 
