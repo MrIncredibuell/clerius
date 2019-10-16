@@ -1,3 +1,5 @@
+import math
+
 from .fields import Field, FieldTypes
 from ..errors import ParseError
 
@@ -26,6 +28,8 @@ class IntegerField(Field):
 @dataclass
 class FloatField(Field):
     allowedTypes: List = field(default_factory=lambda: [FieldTypes.FLOAT])
+    allowNAN: bool = False
+    allowInf: bool = False
 
     def parser(self, value):
         value = super().parser(value)
@@ -38,4 +42,9 @@ class FloatField(Field):
                 )
         if not isinstance(value, float):
             raise ParseError(message="\"{}\" is not an float".format(value))
+        if not self.allowNAN and math.isnan(value):
+            raise ParseError(message="NAN is not allowed")
+        if not self.allowNAN and math.isinf(value):
+            raise ParseError(message="Infinity is not allowed")
+
         return value
