@@ -18,7 +18,7 @@ def requestDocumentationToApiBlueprint(docs):
     queryParameterString = ",".join(sorted(set(queryParameters)))
 
     if queryParameters:
-        queryParameters = "{?" + queryParameterString + "}"
+        queryParameterString = "{?" + queryParameterString + "}"
 
     s = f"""
 # {docs.get("name", "Unnamed Route")} [{docs["path"]}{queryParameterString}]
