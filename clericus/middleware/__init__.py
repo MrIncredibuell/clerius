@@ -22,6 +22,8 @@ def logger(usernameField="username"):
         )
         return resp
 
+    return logRequest
+
 
 def allowCors(origins):
     @middleware
