@@ -1,26 +1,51 @@
-from aiohttp.web import middleware
+from aiohttp.web import middleware, HTTPError
 import datetime
 import bson
 import jwt
+from colors import green, red
 
 
 def logger(usernameField="username"):
     @middleware
     async def logRequest(request, handler):
         start = datetime.datetime.utcnow()
-        resp = await handler(request)
-        print(
-            resp.status,
-            request.method,
-            request.path,
-            getattr(
-                request,
-                "currentUser",
-                {usernameField: "Unauthenticated"},
-            )[usernameField],
-            f"{int((datetime.datetime.utcnow() - start).total_seconds() * 1000)}ms",
-        )
-        return resp
+        try:
+            response = await handler(request)
+
+            status = (
+                red(response.status)
+                if response.status >= 400 else green(response.status)
+            )
+            print(
+                status,
+                request.method,
+                request.path,
+                getattr(
+                    request,
+                    "currentUser",
+                    {usernameField: "Unauthenticated"},
+                )[usernameField],
+                f"{int((datetime.datetime.utcnow() - start).total_seconds() * 1000)}ms",
+            )
+
+            return response
+        except HTTPError as err:
+            print(
+                red(err.status),
+                request.method,
+                request.path,
+                getattr(
+                    request,
+                    "currentUser",
+                    {usernameField: "Unauthenticated"},
+                )[usernameField],
+                f"{int((datetime.datetime.utcnow() - start).total_seconds() * 1000)}ms",
+            )
+
+            raise err
+        except Exception as err:
+            print(type(err), err)
+            raise err
 
     return logRequest
 
