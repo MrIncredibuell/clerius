@@ -103,7 +103,7 @@ def _parameterToMarkdown(name: str, parameter: dict):
     s += f"\n\t+ {name} ({allowedTypes}, {optional}) - {description}\n"
 
     if default is not None:
-        s += f"\t\t+ Default: `{default}`\n`"
+        s += f"\t\t+ Default: ``{default}``\n"
 
     if parameter.get("allowedValues"):
         s += "\t\t+ Members\n"
