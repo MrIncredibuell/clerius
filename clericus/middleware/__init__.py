@@ -88,22 +88,32 @@ async def removeServerHeader(request, handler):
     return response
 
 
-def authentication(db, secretKey, cookieName="authentication"):
+def authentication(
+    db, secretKey, cookieName="authentication", headerKey="X-Auth-Token"
+):
     @middleware
     async def middle(request, handler):
         try:
             value = request.cookies[cookieName]
-            parsed = jwt.decode(
-                value,
-                secretKey,
-                algorithms=['HS256'],
-            )
-            request.currentUser = await db.user.find_one({
-                "_id": bson.ObjectId(parsed["id"]),
-            })
         except:
-            pass
+            value = None
 
+        if value is None and headerKey:
+            value = request.headers.get(headerKey, None)
+
+        if value:
+            try:
+                parsed = jwt.decode(
+                    value,
+                    secretKey,
+                    algorithms=['HS256'],
+                )
+                request.currentUser = await db.user.find_one({
+                    "_id": bson.ObjectId(parsed["id"]),
+                })
+            except:
+                # TODO: Log this
+                pass
         return await handler(request)
 
     return middle
