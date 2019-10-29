@@ -35,18 +35,20 @@ class DictParser():
         parameters = {}
         errors = []
         for name, parameter in self._getFields().items():
+            parseFrom = parameter.parseFrom or name
             try:
-                if name not in source:
+                if parseFrom not in source:
                     if (not parameter.optional):
                         raise ParseError(
-                            message="Missing required field: {}".format(name),
+                            message="Missing required field: {}".
+                            format(parseFrom),
                             statusCode=parameter.missingStatusCode,
                         )
                     else:
                         parameters[name] = parameter.default
                 else:
                     parameters[name] = parameter.parse(
-                        source.get(name, parameter.default)
+                        source.get(parseFrom, parameter.default)
                     )
             except Exception as err:
                 errors.append(err)

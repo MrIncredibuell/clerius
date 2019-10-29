@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Callable
 
 from ..errors import ParseError
 
@@ -28,6 +28,7 @@ class Field():
     allowedTypes: List[str] = field(default_factory=list)
     description: str = ""
     parseFrom: str = None
+    parseFromFunc: Callable = None
     serializeTo: str = None
 
     def parser(self, value):

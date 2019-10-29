@@ -9,7 +9,6 @@ from ..test_case import async_test
 class TestParsing(unittest.TestCase):
     @async_test
     async def test_moo(self):
-        # self.assertEqual(1, 1)
         class dp(DictParser):
             stringOne = StringField()
             stringTwo = StringField()
@@ -38,6 +37,23 @@ class TestParsing(unittest.TestCase):
         self.assertEqual(parsed["dictOne"]["stringThree"], "moo")
         self.assertEqual(parsed["dictOne"]["stringFour"], "cow")
         self.assertEqual(parsed["dictOne"]["dictTwo"]["x"], 1)
+
+
+class TestParseFrom(unittest.TestCase):
+    @async_test
+    async def test_parse_from(self):
+        class dp(DictParser):
+            stringOne = StringField()
+            stringTwo = StringField(parseFrom="notStringTwo")
+
+        parsed = await dp().parse({
+            "stringOne": "moo",
+            "notStringTwo": "cow",
+            "stringTwo": "something else",
+        })
+
+        self.assertEqual(parsed["stringOne"], "moo")
+        self.assertEqual(parsed["stringTwo"], "cow")
 
 
 class TestAcceptHeaderParsing(unittest.TestCase):
