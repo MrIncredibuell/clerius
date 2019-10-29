@@ -35,8 +35,11 @@ class DictParser():
         parameters = {}
         errors = []
         for name, parameter in self._getFields().items():
-            parseFrom = parameter.parseFrom or name
             try:
+                if parameter.parseFromFunc is not None:
+                    parameters[name] = parameter.parseFromFunc(source)
+                    continue
+                parseFrom = parameter.parseFrom or name
                 if parseFrom not in source:
                     if (not parameter.optional):
                         raise ParseError(
@@ -54,6 +57,7 @@ class DictParser():
                 errors.append(err)
         if errors:
             raise ErrorList(errors)
+
         return parameters
 
     def describe(self):

@@ -2,7 +2,7 @@ import unittest
 import asyncio
 
 from ...parsing import DictParser, handleAcceptHeader
-from ...parsing.fields import StringField, DictField
+from ...parsing.fields import StringField, DictField, PrefixDictField, IntegerField
 from ..test_case import async_test
 
 
@@ -54,6 +54,30 @@ class TestParseFrom(unittest.TestCase):
 
         self.assertEqual(parsed["stringOne"], "moo")
         self.assertEqual(parsed["stringTwo"], "cow")
+
+
+class TestPrefixDict(unittest.TestCase):
+    @async_test
+    async def test_prefix_dict(self):
+        class dp(DictParser):
+            dictOne = PrefixDictField(
+                prefix="moo.",
+                fields={
+                    "one": StringField(),
+                    "two": IntegerField(),
+                },
+            )
+
+        parsed = await dp().parse({
+            "one": "moo",
+            "two": "cow",
+            "dictOne": "something else",
+            "moo.one": "theOne",
+            "moo.two": 2,
+        })
+
+        self.assertEqual(parsed["dictOne"]["one"], "theOne")
+        self.assertEqual(parsed["dictOne"]["two"], 2)
 
 
 class TestAcceptHeaderParsing(unittest.TestCase):

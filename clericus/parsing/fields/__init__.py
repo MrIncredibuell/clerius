@@ -13,6 +13,6 @@ from .numbers import IntegerField, FloatField
 from .booleans import BoolField
 from .dates import DatetimeField
 from .lists import ListField
-from .dicts import DictField
+from .dicts import DictField, PrefixDictField
 from .mongo import ObjectIdField
 from .errors import ErrorField

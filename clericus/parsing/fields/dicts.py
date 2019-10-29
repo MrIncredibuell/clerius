@@ -68,3 +68,24 @@ class DictField(Field):
             key: field.describe()
             for (key, field) in self._getFields().items()
         }
+
+
+class PrefixDictField(DictField):
+    """
+    A dict field which matches any keys in the source
+    starting with a given prefix, and parses the suffixes
+    and values
+    """
+
+    def __init__(self, prefix: str, parseFromFunc=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prefix = prefix
+        self.parseFromFunc = self._parseFromFunc
+
+    def _parseFromFunc(self, source):
+        result = {}
+        for k, v in source.items():
+            if k.startswith(self.prefix):
+                result[k[len(self.prefix):]] = v
+
+        return self.parse(result)
