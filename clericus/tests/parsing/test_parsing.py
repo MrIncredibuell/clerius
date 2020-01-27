@@ -2,7 +2,7 @@ import unittest
 import asyncio
 
 from ...parsing import DictParser, handleAcceptHeader
-from ...parsing.fields import StringField, DictField, PrefixDictField, IntegerField
+from ...parsing.fields import StringField, DictField, PrefixDictField, IntegerField, ListField
 from ..test_case import async_test
 
 
@@ -17,6 +17,7 @@ class TestParsing(unittest.TestCase):
                     "stringThree": StringField(),
                     "stringFour": StringField(),
                     "dictTwo": DictField({}),
+                    "listOne": ListField(IntegerField())
                 }
             )
 
@@ -28,8 +29,9 @@ class TestParsing(unittest.TestCase):
                 "stringFour": "cow",
                 "dictTwo": {
                     "x": 1
-                }
-            }
+                },
+                "listOne": [1, 2, 3],
+            },
         })
 
         self.assertEqual(parsed["stringOne"], "moo")
@@ -37,6 +39,7 @@ class TestParsing(unittest.TestCase):
         self.assertEqual(parsed["dictOne"]["stringThree"], "moo")
         self.assertEqual(parsed["dictOne"]["stringFour"], "cow")
         self.assertEqual(parsed["dictOne"]["dictTwo"]["x"], 1)
+        self.assertEqual(parsed["dictOne"]["listOne"], [1, 2, 3])
 
 
 class TestParseFrom(unittest.TestCase):

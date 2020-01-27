@@ -17,7 +17,7 @@ class ListField(Field):
             return []
         parsed = []
         for value in source:
-            parsed.append(elementField.parser(value))
+            parsed.append(self.elementField.parser(value))
         return parsed
 
     def serialize(self, values):
@@ -28,7 +28,6 @@ class ListField(Field):
             try:
                 result.append(self.elementField.serialize(value))
             except Exception as e:
-                print(e)
                 result.append(value)
 
         return result
