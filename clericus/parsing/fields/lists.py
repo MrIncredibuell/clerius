@@ -7,8 +7,8 @@ from typing import Any, List, Dict
 
 @dataclass
 class ListField(Field):
-    def __init__(self, elementField):
-        super().__init__()
+    def __init__(self, elementField, **kwargs):
+        super().__init__(**kwargs)
         self.elementField = elementField
         self.default = []
 
